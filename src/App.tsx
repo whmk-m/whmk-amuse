@@ -1,22 +1,30 @@
-import {ReactElement} from "react";
+import React from "react";
+import Button, {ButtonSize, ButtonTypeEnum} from "./components/Button";
 
-function App(): ReactElement {
-  console.log('aaa')
+function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button>
+        默认
+      </Button>
+      <Button type={ButtonTypeEnum.primary}>
+        primary
+      </Button>
+      <Button size={ButtonSize.middle}>
+        middle
+      </Button>
+      <Button disabled>
+        disabled
+      </Button>
+      <Button
+        className="App-link"
+        type = {ButtonTypeEnum.link}
+        href="http://www.baidu.com"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        百度一下
+      </Button>
     </div>
   );
 }
