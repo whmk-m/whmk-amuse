@@ -1,5 +1,3 @@
-import logo from "./logo.svg";
-import './App.scss';
 import {ReactElement} from "react";
 
 function App(): ReactElement {
@@ -7,7 +5,6 @@ function App(): ReactElement {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo"/>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
