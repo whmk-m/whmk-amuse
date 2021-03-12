@@ -12,10 +12,11 @@ export enum ButtonTypeEnum {
   default = 'default',
   primary = 'primary',
   danger = 'danger',
-  link = 'link'
+  link = 'link',
+  text = 'text'
 }
 
-export type ButtonType = ButtonTypeEnum.default | ButtonTypeEnum.primary | ButtonTypeEnum.danger | ButtonTypeEnum.link
+export type ButtonType = ButtonTypeEnum.default | ButtonTypeEnum.primary | ButtonTypeEnum.danger | ButtonTypeEnum.link | ButtonTypeEnum.text
 
 interface IBaseButtonProps {
   className?: string,
@@ -24,6 +25,7 @@ interface IBaseButtonProps {
   type?: ButtonType,
   href?: string,
   children: React.ReactNode,
+
   [propName: string]: any
 }
 
@@ -40,8 +42,8 @@ const Button: React.FC<IBaseButtonProps> = (props) => {
   const classNames = classnames('btn', {
     [`btn-${type}`]: !!type,
     [`btn-${size}`]: !!size,
-    'disabled':!!disabled,
-    [`${className}`]:!!className
+    'disabled': !!disabled,
+    [`${className}`]: !!className
   })
   if (type === ButtonTypeEnum.link) {
     return (
@@ -50,7 +52,9 @@ const Button: React.FC<IBaseButtonProps> = (props) => {
         href={href}
         {...rest}
       >
-        {children}
+        <span>
+           {children}
+        </span>
       </a>
     )
   }
@@ -60,7 +64,9 @@ const Button: React.FC<IBaseButtonProps> = (props) => {
       className={classNames}
       {...rest}
     >
-      {children}
+     <span>
+           {children}
+        </span>
     </button>
   )
 }

@@ -7,12 +7,18 @@ function App() {
       <Button>
         默认
       </Button>
-      <Button type={ButtonTypeEnum.primary}>
+      <br/>
+      <Button type={ButtonTypeEnum.danger}>
         primary
       </Button>
-      <Button size={ButtonSize.middle}>
+      <Button type={ButtonTypeEnum.text}>
+        Text Button
+      </Button>
+      <br/>
+      <Button size={ButtonSize.large}>
         middle
       </Button>
+      <br/>
       <Button disabled>
         disabled
       </Button>
