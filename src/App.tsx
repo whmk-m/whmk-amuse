@@ -1,5 +1,5 @@
 import React from "react";
-import Button, {ButtonSize, ButtonTypeEnum} from "./components/Button";
+import Button, {ButtonSize, ButtonType} from "./components/Button";
 
 function App() {
   return (
@@ -8,10 +8,15 @@ function App() {
         默认
       </Button>
       <br/>
-      <Button type={ButtonTypeEnum.danger}>
+      <Button btnType={ButtonType.danger} autoFocus={true}>
         primary
       </Button>
-      <Button type={ButtonTypeEnum.text}>
+      <Button
+        btnType={ButtonType.text}
+        onClick={(e) => {
+          e.preventDefault();
+          alert(e.currentTarget.tagName)
+        }}>
         Text Button
       </Button>
       <br/>
@@ -24,7 +29,7 @@ function App() {
       </Button>
       <Button
         className="App-link"
-        type = {ButtonTypeEnum.link}
+        btnType={ButtonType.link}
         href="http://www.baidu.com"
         target="_blank"
         rel="noopener noreferrer"
