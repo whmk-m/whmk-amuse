@@ -1,0 +1,51 @@
+.whmk-alert {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  .main {
+    flex:1;
+    display: flex;
+    flex-direction: column;
+  }
+  .close-icon {
+    flex:none;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+}
+.whmk-alert-success {
+  color: #fff;
+  background: $success;
+  border-color:$success;
+}
+
+.whmk-alert-info {
+  color: #fff;
+  background: $secondary;
+  border-color:$secondary;
+}
+
+.whmk-alert-danger {
+  color: #fff;
+  background: $danger;
+  border-color:$danger;
+}
+
+.whmk-alert-warning {
+  color: #fff;
+  background: $warning;
+  border-color:$warning;
+}
+
+
+

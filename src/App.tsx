@@ -1,6 +1,6 @@
 import React from "react";
 import Button, {ButtonSize, ButtonType} from "./components/Button";
-
+import Alert, { AlertType } from "./components/Alert";
 function App() {
   return (
     <div className="App">
@@ -36,6 +36,20 @@ function App() {
       >
         百度一下
       </Button>
+      <hr/>
+      <div style={{width:'300px'}}>
+        <Alert title='Hello world!'/>
+        <Alert type='success' closable={true} title='Hello world!'/>
+        <Alert type='danger' closable={true} onClose={()=>{
+          alert('关闭')
+        }} title='Hello world!'/>
+        <Alert
+          type='warning'
+          description='这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述这是一段描述'
+          title='这是一段标题'
+          closable={true}
+        />
+      </div>
     </div>
   );
 }
