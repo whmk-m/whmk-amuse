@@ -3,7 +3,7 @@
  * @date 2021/3/16 21:05
  */
 
-// toBe 使用js中 Object.is 完全等于判断
+/*// toBe 使用js中 Object.is 完全等于判断
 test('测试1+1=2',()=>{
     expect(1+1).toBe(2)
 })
@@ -18,4 +18,4 @@ test('测试boolean',()=>{
 // toEqual 表示值相等
 test('测试 object',()=>{
     expect({name:'whmk'}).toEqual({name:'whmk'})
-})
+})*/
