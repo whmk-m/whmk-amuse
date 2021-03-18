@@ -1,8 +1,9 @@
 import React from "react";
 import Button, {ButtonSize, ButtonType} from "./components/Button";
-import Alert, { AlertType } from "./components/Alert";
+import Alert, {AlertType} from "./components/Alert";
 import Menu, {IMenuProps} from "./components/Menu";
-import MenuItem,{IMenuItemProps} from "./components/Menu/MenuItem";
+import MenuItem, {IMenuItemProps} from "./components/Menu/MenuItem";
+
 function App() {
   return (
     <div className="App">
@@ -41,10 +42,10 @@ function App() {
         </Button>
       </div>
       <hr/>
-      <div style={{width:'300px'}}>
+      <div style={{width: '300px'}}>
         <Alert title='Hello world!'/>
         <Alert type='success' closable={true} title='Hello world!'/>
-        <Alert type='danger' closable={true} onClose={()=>{
+        <Alert type='danger' closable={true} onClose={() => {
           alert('关闭')
         }} title='Hello world!'/>
         <Alert
@@ -56,15 +57,20 @@ function App() {
       </div>
       <hr/>
       <div>
-        <Menu className={'custom-menu'}>
-          <MenuItem className={'custom-item'}>
+        <Menu className={'custom-menu'} onSelect={ (activeIndex) => {
+          console.log('选中的索引：',activeIndex)
+        }}>
+          <MenuItem index={0} className={'custom-item'}>
             1
           </MenuItem>
-          <MenuItem disabled={true}>
+          <MenuItem index={1} disabled={true}>
             2
           </MenuItem>
-          <MenuItem style={{color:'#ff0000'}}>
+          <MenuItem index={2} style={{color: '#ff0000'}}>
             3
+          </MenuItem>
+          <MenuItem index={3}>
+            4
           </MenuItem>
         </Menu>
       </div>
