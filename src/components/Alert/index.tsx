@@ -4,7 +4,7 @@ import classnames from "classnames";
 export type AlertType = 'success' | 'danger' | 'warning' | 'info'
 
 
-interface IBaseAlertProps {
+export interface IBaseAlertProps {
   type?: AlertType,
   title: string
   description?: string,
@@ -40,7 +40,7 @@ const Alert: React.FC<IBaseAlertProps> = (props) => {
                 <div className='close-icon' onClick={() => {
                   setVisible(false)
                   onClose && onClose()
-                }}>X</div>
+                }}>关闭</div>
               )
             }
           </div>
