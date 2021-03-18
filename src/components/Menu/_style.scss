@@ -12,47 +12,52 @@
   margin: 0;
   padding: 0;
   border-bottom: $menu-border-width solid $menu-border-color;
-  .whmk-menu-item {
-    flex:1;
-    padding: $menu-item-padding-x  $menu-item-padding-y;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-bottom: $menu-item-active-border-width solid transparent;
-    transition: $menu-transition;
-    &.is-active, &:hover {
-      color: $menu-item-active-color;
-      border-bottom: $menu-item-active-border-width solid $menu-item-active-color;
-    }
-    &.is-disabled {
-      cursor: not-allowed;
-      color:$menu-item-disabled-color;
-      &:hover {
-        border-bottom-color: transparent;
-      }
+}
+
+.whmk-menu-item {
+  flex: 1;
+  padding: $menu-item-padding-x $menu-item-padding-y;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-bottom: $menu-item-active-border-width solid transparent;
+  transition: $menu-transition;
+
+  &.is-active, &:hover {
+    color: $menu-item-active-color;
+    border-bottom: $menu-item-active-border-width solid $menu-item-active-color;
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    color: $menu-item-disabled-color;
+
+    &:hover {
+      border-bottom-color: transparent;
     }
   }
-  &.whmk-menu-vertical {
-    flex-direction: column;
+}
+
+.whmk-menu-vertical {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-right: $menu-border-width solid $menu-border-color;
+  border-bottom:0;
+  .whmk-menu-item {
+    width: 100%;
     justify-content: flex-start;
-    align-items: flex-start;
-    border-right: $menu-border-width solid $menu-border-color;
-    border-bottom:0;
-    .whmk-menu-item {
-      width: 100%;
-      justify-content: flex-start;
+    border-bottom: 0;
+    border-left: $menu-item-active-border-width solid transparent;
+    &.is-active, &:hover {
       border-bottom: 0;
-      border-left: $menu-item-active-border-width solid transparent;
-      &.is-active, &:hover {
-        border-bottom: 0;
-        border-left: $menu-item-active-border-width solid $menu-item-active-color;
-      }
-      &.is-disabled {
-        &:hover {
-          border-bottom-color: transparent;
-          border-left-color: transparent;
-        }
+      border-left: $menu-item-active-border-width solid $menu-item-active-color;
+    }
+    &.is-disabled {
+      &:hover {
+        border-bottom-color: transparent;
+        border-left-color: transparent;
       }
     }
   }
