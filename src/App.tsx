@@ -74,6 +74,25 @@ function App() {
           </MenuItem>
         </Menu>
       </div>
+      <hr/>
+      <div style={{width:200,margin:20}}>
+        <Menu mode={'vertical'} className={'custom-menu'} onSelect={ (activeIndex) => {
+          console.log('选中的索引：',activeIndex)
+        }}>
+          <MenuItem index={0} className={'custom-item'}>
+            1
+          </MenuItem>
+          <MenuItem index={1} disabled={true}>
+            2
+          </MenuItem>
+          <MenuItem index={2} style={{color: '#ff0000'}}>
+            3
+          </MenuItem>
+          <MenuItem index={3}>
+            4
+          </MenuItem>
+        </Menu>
+      </div>
     </div>
   );
 }

@@ -20,7 +20,7 @@ const MenuItem: React.FC<IMenuItemProps> = (props) => {
   const context = useContext(MenuContext)
   const classes = classNames('whmk-menu-item', {
     'is-disabled': disabled,
-    'ia-active': context.activeIndex === index,
+    'is-active': context.activeIndex === index,
     [`${className}`]: !!className,
   })
   return (
