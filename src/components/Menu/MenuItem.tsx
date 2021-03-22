@@ -3,7 +3,7 @@ import classNames from "classnames";
 import {MenuContext} from './index'
 
 export interface IMenuItemProps {
-  index?: number
+  index?: number | string
   disabled?: boolean,
   className?: string,
   style?: React.CSSProperties
@@ -26,7 +26,7 @@ const MenuItem: React.FC<IMenuItemProps> = (props) => {
   return (
     <li className={classes} style={style} onClick={(event) => {
       !disabled &&
-      typeof index === 'number' &&
+      typeof index !== "undefined" &&
       context.onSelect &&
       context.onSelect(index)
     }}>

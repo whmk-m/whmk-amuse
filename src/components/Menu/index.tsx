@@ -8,13 +8,14 @@ export interface IMenuProps {
   defaultIndex?: number,
   className?: string,
   style?: React.CSSProperties,
-  onSelect?: (selectedIndex: number) => void,
+  onSelect?: (selectedIndex: number | string) => void,
   mode?: MenuMode
 }
 
 interface IMenuContext {
-  activeIndex: number
-  onSelect?: (selectedIndex: number) => void,
+  activeIndex: number | string
+  onSelect?: (selectedIndex: number | string) => void,
+  mode?:MenuMode
 }
 // 创建context上下文，与子组件之间可以共享属性
 export const MenuContext = React.createContext<IMenuContext>({
@@ -30,21 +31,22 @@ const Menu: React.FC<IMenuProps> = (props) => {
     mode = 'horizontal',
     children
   } = props
-  const [activeIndex, setActiveIndex] = useState(defaultIndex)
+  const [activeIndex, setActiveIndex] = useState<string | number>(defaultIndex)
 
   const classes = classNames('whmk-menu', {
     'whmk-menu-vertical': mode === 'vertical',
     [`${className}`]: !!className,
   })
 
-  const handleClick = (index: number) => {
+  const handleClick = (index: number | string) => {
     setActiveIndex(index)
     onSelect && onSelect(index)
   }
 
   const passwordContext:IMenuContext = {
     activeIndex,
-    onSelect:handleClick
+    onSelect:handleClick,
+    mode
   }
 
   // 渲染子节点，同时约束子节点必须为MenuItem
@@ -52,8 +54,8 @@ const Menu: React.FC<IMenuProps> = (props) => {
     return React.Children.map(children,(child,index)=>{
       const childElement = child as React.FunctionComponentElement<IMenuItemProps>
       const { displayName  } = childElement.type
-      if (displayName !== 'MenuItem') {
-        console.error('Warning: Menu has a child which is not a MenuItem component')
+      if (displayName !== 'MenuItem' && displayName !=='SubMenu') {
+        console.error('Warning: Menu has a child which is not a MenuItem or SubMenu component')
         return null
       }
       return React.cloneElement(childElement,{

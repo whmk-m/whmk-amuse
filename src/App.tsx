@@ -3,10 +3,11 @@ import Button, {ButtonSize, ButtonType} from "./components/Button";
 import Alert from "./components/Alert";
 import Menu from "./components/Menu";
 import MenuItem from "./components/Menu/MenuItem";
+import SubMenu1 from "./components/Menu/SubMenu1";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{padding:'50px'}}>
       <div>
         <Button>
           默认
@@ -93,6 +94,58 @@ function App() {
             4
           </MenuItem>
           <p>这是一段</p>
+        </Menu>
+      </div>
+      <div>
+        <Menu className={'custom-menu'} onSelect={ (activeIndex) => {
+          console.log('选中的索引：',activeIndex)
+        }}>
+          <MenuItem className={'custom-item'}>
+            1
+          </MenuItem>
+          <MenuItem disabled={true}>
+            2
+          </MenuItem>
+          <MenuItem style={{color: '#ff0000'}}>
+            3
+          </MenuItem>
+          <MenuItem>
+            4
+          </MenuItem>
+          <SubMenu1 title={'子菜单'}>
+            <MenuItem className={'submenu-5'}>
+              5-1
+            </MenuItem>
+            <MenuItem disabled={true}>
+              5-2
+            </MenuItem>
+          </SubMenu1>
+        </Menu>
+      </div>
+      <div style={{width:200,margin:20}}>
+        <Menu mode={'vertical'} className={'custom-menu'} onSelect={ (activeIndex) => {
+          console.log('选中的索引：',activeIndex)
+        }}>
+          <MenuItem className={'custom-item'}>
+            1
+          </MenuItem>
+          <MenuItem disabled={true}>
+            2
+          </MenuItem>
+          <MenuItem style={{color: '#ff0000'}}>
+            3
+          </MenuItem>
+          <MenuItem>
+            4
+          </MenuItem>
+          <SubMenu1 title={'子菜单'}>
+            <MenuItem className={'submenu-5'}>
+              5-1
+            </MenuItem>
+            <MenuItem disabled={true}>
+              5-2
+            </MenuItem>
+          </SubMenu1>
         </Menu>
       </div>
     </div>
