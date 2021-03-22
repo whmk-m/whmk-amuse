@@ -1,5 +1,6 @@
-import React, {useState} from 'react'
+import React, { useState} from 'react'
 import classNames from "classnames";
+import { IMenuItemProps } from './MenuItem'
 
 export type MenuMode = 'vertical' | 'horizontal'
 
@@ -46,10 +47,25 @@ const Menu: React.FC<IMenuProps> = (props) => {
     onSelect:handleClick
   }
 
+  // 渲染子节点，同时约束子节点必须为MenuItem
+  const renderChildren = () => {
+    return React.Children.map(children,(child,index)=>{
+      const childElement = child as React.FunctionComponentElement<IMenuItemProps>
+      const { displayName  } = childElement.type
+      if (displayName !== 'MenuItem') {
+        console.error('Warning: Menu has a child which is not a MenuItem component')
+        return null
+      }
+      return React.cloneElement(childElement,{
+        index
+      })
+    })
+  }
+
   return (
     <ul className={classes} style={style} data-testid='test-menu'>
       <MenuContext.Provider value={passwordContext}>
-        {children}
+        {renderChildren()}
       </MenuContext.Provider>
     </ul>
   )

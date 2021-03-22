@@ -16,18 +16,19 @@ const verticalProps: IMenuProps = {
 
 const MenuWrapper = (props: IMenuProps) => (
   <Menu {...props}>
-    <MenuItem index={0}>
+    <MenuItem>
       0
     </MenuItem>
-    <MenuItem index={1} className={'custom-item-class'}>
+    <MenuItem className={'custom-item-class'}>
       1
     </MenuItem>
-    <MenuItem index={2} disabled={true}>
+    <MenuItem disabled={true}>
       2
     </MenuItem>
-    <MenuItem index={3} style={{color: 'red'}}>
+    <MenuItem style={{color: 'red'}}>
       3
     </MenuItem>
+    <li>hello world</li>
   </Menu>
 )
 let wrapper: RenderResult, menuEle: HTMLElement, activeEle: HTMLElement, disableEle: HTMLElement

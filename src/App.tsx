@@ -1,8 +1,8 @@
 import React from "react";
 import Button, {ButtonSize, ButtonType} from "./components/Button";
-import Alert, {AlertType} from "./components/Alert";
-import Menu, {IMenuProps} from "./components/Menu";
-import MenuItem, {IMenuItemProps} from "./components/Menu/MenuItem";
+import Alert from "./components/Alert";
+import Menu from "./components/Menu";
+import MenuItem from "./components/Menu/MenuItem";
 
 function App() {
   return (
@@ -60,18 +60,19 @@ function App() {
         <Menu className={'custom-menu'} onSelect={ (activeIndex) => {
           console.log('选中的索引：',activeIndex)
         }}>
-          <MenuItem index={0} className={'custom-item'}>
+          <MenuItem className={'custom-item'}>
             1
           </MenuItem>
-          <MenuItem index={1} disabled={true}>
+          <MenuItem disabled={true}>
             2
           </MenuItem>
-          <MenuItem index={2} style={{color: '#ff0000'}}>
+          <MenuItem style={{color: '#ff0000'}}>
             3
           </MenuItem>
-          <MenuItem index={3}>
+          <MenuItem>
             4
           </MenuItem>
+          <li>hello world</li>
         </Menu>
       </div>
       <hr/>
@@ -79,18 +80,19 @@ function App() {
         <Menu mode={'vertical'} className={'custom-menu'} onSelect={ (activeIndex) => {
           console.log('选中的索引：',activeIndex)
         }}>
-          <MenuItem index={0} className={'custom-item'}>
+          <MenuItem className={'custom-item'}>
             1
           </MenuItem>
-          <MenuItem index={1} disabled={true}>
+          <MenuItem disabled={true}>
             2
           </MenuItem>
-          <MenuItem index={2} style={{color: '#ff0000'}}>
+          <MenuItem style={{color: '#ff0000'}}>
             3
           </MenuItem>
-          <MenuItem index={3}>
+          <MenuItem>
             4
           </MenuItem>
+          <p>这是一段</p>
         </Menu>
       </div>
     </div>
