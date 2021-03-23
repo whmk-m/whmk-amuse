@@ -52,11 +52,94 @@
     border-left: $menu-item-active-border-width solid transparent;
     &.is-active, &:hover {
       border-bottom: 0;
+      color: $menu-item-active-color;
+    }
+    &.is-active {
       border-left: $menu-item-active-border-width solid $menu-item-active-color;
+      background-color: #e9f4ff;
     }
     &.is-disabled {
       &:hover {
         border-bottom-color: transparent;
+        border-left-color: transparent;
+      }
+    }
+  }
+}
+
+.whmk-submenu {
+  position: relative;
+  transition: $menu-transition;
+  display: flex;
+  flex:1;
+
+}
+.whmk-submenu-horizontal {
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: $menu-item-padding-x $menu-item-padding-y;
+  border-bottom: $menu-item-active-border-width solid transparent;
+  &.is-active, &:hover {
+    color: $menu-item-active-color;
+    border-bottom-color: $menu-item-active-color;
+  }
+}
+.whmk-menu-sub {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.whmk-sub-horizontal {
+  position: absolute;
+  top:10px;
+  left:0;
+  right: 0;
+  transform: translateY(50%);
+  box-shadow: $submenu-box-shadow;
+  border:$menu-border-width solid $menu-border-color;
+  .whmk-menu-item {
+    &:hover {
+      color: $menu-item-active-color;
+      border-bottom-color: transparent;
+    }
+    &.is-active {
+      background-color: #e9f4ff;
+      border-bottom-color: transparent;
+    }
+    &.is-disabled {
+      cursor: not-allowed;
+      color: $menu-item-disabled-color;
+      &:hover {
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+      }
+    }
+  }
+}
+.whmk-submenu-vertical {
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-bottom: 0;
+  border-left: $menu-item-active-border-width solid transparent;
+  .whmk-submenu-title {
+    padding: $menu-item-padding-x $menu-item-padding-y;
+  }
+}
+.whmk-sub-vertical {
+  .whmk-menu-item {
+    padding-left: 20px;
+    &:hover {
+      color: $menu-item-active-color;
+    }
+    &.is-active {
+      background-color: #e9f4ff;
+    }
+    &.is-disabled {
+      cursor: not-allowed;
+      color: $menu-item-disabled-color;
+      &:hover {
         border-left-color: transparent;
       }
     }

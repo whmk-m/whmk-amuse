@@ -31,8 +31,9 @@ const SubMenu1:React.FC<ISubMenuProps> = (props)=>{
     [`${className}`]: !!className,
   })
 
-  const menuClasses = classNames('whmk-menu','whmk-menu-sub',{
-    'whmk-menu-vertical':context.mode === 'vertical',
+  const menuClasses = classNames('whmk-menu-sub',{
+    'whmk-sub-vertical': context.mode === 'vertical',
+    'whmk-sub-horizontal': context.mode === 'horizontal',
   })
 
   const renderChildren = () => {
