@@ -5,40 +5,43 @@ import { IMenuItemProps } from './MenuItem'
 export type MenuMode = 'vertical' | 'horizontal'
 
 export interface IMenuProps {
-  defaultIndex?: number,
+  defaultIndex?: string,
   className?: string,
   style?: React.CSSProperties,
-  onSelect?: (selectedIndex: number | string) => void,
+  onSelect?: (selectedIndex: string) => void,
   mode?: MenuMode
+  defaultOpenSubMenus?:Array<string>
 }
 
 interface IMenuContext {
-  activeIndex: number | string
-  onSelect?: (selectedIndex: number | string) => void,
+  activeIndex: string
+  onSelect?: (selectedIndex: string) => void,
   mode?:MenuMode
+  defaultOpenSubMenus?:Array<string>
 }
 // 创建context上下文，与子组件之间可以共享属性
 export const MenuContext = React.createContext<IMenuContext>({
-  activeIndex: 0
+  activeIndex: '0'
 })
 
 const Menu: React.FC<IMenuProps> = (props) => {
   const {
-    defaultIndex = 0,
+    defaultIndex = '0',
     className,
     style,
     onSelect,
     mode = 'horizontal',
-    children
+    children,
+    defaultOpenSubMenus = []
   } = props
-  const [activeIndex, setActiveIndex] = useState<string | number>(defaultIndex)
+  const [activeIndex, setActiveIndex] = useState<string>(defaultIndex)
 
   const classes = classNames('whmk-menu', {
     'whmk-menu-vertical': mode === 'vertical',
     [`${className}`]: !!className,
   })
 
-  const handleClick = (index: number | string) => {
+  const handleClick = (index: string) => {
     setActiveIndex(index)
     onSelect && onSelect(index)
   }
@@ -46,7 +49,8 @@ const Menu: React.FC<IMenuProps> = (props) => {
   const passwordContext:IMenuContext = {
     activeIndex,
     onSelect:handleClick,
-    mode
+    mode,
+    defaultOpenSubMenus,
   }
 
   // 渲染子节点，同时约束子节点必须为MenuItem
@@ -59,7 +63,7 @@ const Menu: React.FC<IMenuProps> = (props) => {
         return null
       }
       return React.cloneElement(childElement,{
-        index
+        index:`${index}`
       })
     })
   }

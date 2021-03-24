@@ -5,7 +5,7 @@ import MenuItem from "./MenuItem";
 
 
 const activeProps: IMenuProps = {
-  defaultIndex: 2,
+  defaultIndex: '2',
   onSelect: jest.fn()
 }
 
@@ -66,7 +66,7 @@ describe('测试Menu 和 MenuItem 组件 ', () => {
     fireEvent.click(otherMenuItem)
     expect(otherMenuItem).toHaveClass('is-active')
     expect(activeEle).not.toHaveClass('is-active')
-    expect(activeProps.onSelect).toHaveBeenCalledWith(3)
+    expect(activeProps.onSelect).toHaveBeenCalledWith('3')
   });
 
   it('渲染垂直模式的Menu', function () {

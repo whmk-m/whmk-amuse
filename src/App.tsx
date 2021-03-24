@@ -97,7 +97,7 @@ function App() {
         </Menu>
       </div>
       <div>
-        <Menu className={'custom-menu'} onSelect={ (activeIndex) => {
+        <Menu defaultIndex={'4-0'} className={'custom-menu'} onSelect={ (activeIndex) => {
           console.log('选中的索引：',activeIndex)
         }}>
           <MenuItem className={'custom-item'}>
@@ -123,7 +123,7 @@ function App() {
         </Menu>
       </div>
       <div style={{width:200,margin:20}}>
-        <Menu mode={'vertical'} className={'custom-menu'} onSelect={ (activeIndex) => {
+        <Menu defaultIndex={'3'} defaultOpenSubMenus={['4']} mode={'vertical'} className={'custom-menu'} onSelect={ (activeIndex) => {
           console.log('选中的索引：',activeIndex)
         }}>
           <MenuItem className={'custom-item'}>

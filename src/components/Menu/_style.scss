@@ -88,10 +88,7 @@
     justify-content: center;
     align-items: center;
   }
-  &:hover{
-    border-bottom-color: $menu-item-active-color;
-  }
-  &.is-active {
+  &.is-active,&:hover {
     border-bottom-color: $menu-item-active-color;
     .whmk-submenu-title {
       color: $menu-item-active-color;
