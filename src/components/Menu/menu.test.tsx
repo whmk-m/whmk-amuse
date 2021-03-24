@@ -1,8 +1,8 @@
 import React from "react";
-import {render, fireEvent, RenderResult} from '@testing-library/react'
+import {render, fireEvent, RenderResult, waitFor} from '@testing-library/react'
 import Menu, {IMenuProps} from "./index";
 import MenuItem from "./MenuItem";
-
+import SubMenu1, {ISubMenuProps} from "./SubMenu1";
 
 const activeProps: IMenuProps = {
   defaultIndex: '2',
@@ -13,6 +13,27 @@ const verticalProps: IMenuProps = {
   mode: 'vertical',
   className: 'test-class'
 }
+
+const defaultOpenSubMenuProps: IMenuProps = {
+  mode: 'vertical',
+  defaultOpenSubMenus:['4']
+}
+// 添加subMenu显示隐藏的css类，便于测试
+const createSubMenuStyle = () => {
+  const SubMenuCss: string = `
+    .whmk-menu-sub-show {
+      display: block;
+    }
+    .whmk-menu-sub-hide {
+      display: none;
+    }
+  `
+  const style = document.createElement('style')
+  style.type = 'text/css'
+  style.innerHTML = SubMenuCss
+  return style
+}
+
 
 const MenuWrapper = (props: IMenuProps) => (
   <Menu {...props}>
@@ -28,7 +49,14 @@ const MenuWrapper = (props: IMenuProps) => (
     <MenuItem style={{color: 'red'}}>
       3
     </MenuItem>
+    {/*
     <li>hello world</li>
+*/}
+    <SubMenu1 title={'子菜单'}>
+      <MenuItem>
+        4-0
+      </MenuItem>
+    </SubMenu1>
   </Menu>
 )
 let wrapper: RenderResult, menuEle: HTMLElement, activeEle: HTMLElement, disableEle: HTMLElement
@@ -76,5 +104,65 @@ describe('测试Menu 和 MenuItem 组件 ', () => {
 
     expect(wrapper.getByText(1)).toHaveClass('whmk-menu-item custom-item-class')
     expect(wrapper.getByText(3)).toHaveAttribute('style', 'color: red;')
+  });
+
+  it('渲染水平模式的子菜单', async function () {
+    wrapper = render(MenuWrapper({}))
+    // 添加css
+    document.head.appendChild(createSubMenuStyle())
+    // 默认情况下不显示
+    const subMenuItemEle = wrapper.getByText('4-0')
+    expect(subMenuItemEle).not.toBeVisible()
+
+    // hover 进来，显示
+    const subMenuTitleEle = wrapper.getByText('子菜单')
+    expect(subMenuTitleEle.parentNode).toHaveClass('whmk-submenu whmk-submenu-horizontal')
+    fireEvent.mouseEnter(subMenuTitleEle)
+    // 因为在mouseEnter方法中我们使用了异步，所以testLibrary 提供了waitFor方法在这段异步时间内重复调用断言
+    await waitFor(() => {
+      expect(subMenuItemEle).toBeVisible()
+    })
+
+    // 移出 隐藏
+    fireEvent.mouseLeave(subMenuTitleEle)
+    await waitFor(() => {
+      expect(subMenuItemEle).not.toBeVisible()
+    })
+  });
+  it('渲染垂直模式的子菜单', async function () {
+    wrapper = render(MenuWrapper(verticalProps))
+    // 添加css
+    document.head.appendChild(createSubMenuStyle())
+    // 默认情况下不显示
+    const subMenuItemEle = wrapper.getByText('4-0')
+    expect(subMenuItemEle).not.toBeVisible()
+
+    // 点击 显示
+    const subMenuTitleEle = wrapper.getByText('子菜单')
+    expect(subMenuTitleEle.parentNode).toHaveClass('whmk-submenu whmk-submenu-vertical')
+    fireEvent.click(subMenuTitleEle)
+    expect(subMenuItemEle).toBeVisible()
+    // 点击子menuItem, 会添加选中类
+    fireEvent.click(subMenuItemEle)
+    expect(subMenuItemEle).toHaveClass('is-active')
+    expect(subMenuTitleEle.parentNode).toHaveClass('is-active')
+
+
+    // 再次点击 隐藏
+    fireEvent.click(subMenuTitleEle)
+    expect(subMenuItemEle).not.toBeVisible()
+  });
+  it('渲染垂直模式默认展开子菜单', async function () {
+    wrapper = render(MenuWrapper(defaultOpenSubMenuProps))
+    // 添加css
+    document.head.appendChild(createSubMenuStyle())
+    // 默认情况下显示
+    const subMenuItemEle = wrapper.getByText('4-0')
+    expect(subMenuItemEle).toBeVisible()
+
+    // 点击 隐藏
+    const subMenuTitleEle = wrapper.getByText('子菜单')
+    fireEvent.click(subMenuTitleEle)
+    expect(subMenuItemEle).not.toBeVisible()
   });
 })
