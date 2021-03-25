@@ -4,7 +4,10 @@ import Alert from "./components/Alert";
 import Menu from "./components/Menu";
 import MenuItem from "./components/Menu/MenuItem";
 import SubMenu1 from "./components/Menu/SubMenu1";
-
+import Icon from "./components/Icon";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas, faCoffee,faAddressBook } from '@fortawesome/free-solid-svg-icons'
+library.add(fas) // 一次性导入所有的图标，接下来就可以使用字符串了
 function App() {
   return (
     <div className="App" style={{padding:'50px'}}>
@@ -150,6 +153,15 @@ function App() {
             </MenuItem>
           </SubMenu1>
         </Menu>
+      </div>
+      <hr/>
+      <div>
+        {/* 三种使用图标的方式 */}
+        <Icon theme={'success'} icon={faCoffee} size={'lg'} title={'咖啡ICON'}/>
+        <Icon icon={faAddressBook} />
+        <Icon icon='ambulance' />
+        <Icon icon='angle-double-left' />
+        <Icon icon={['fas','angry']}/>
       </div>
     </div>
   );
