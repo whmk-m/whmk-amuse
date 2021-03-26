@@ -1,0 +1,27 @@
+/**
+* @author asus
+* @date 2021/3/26 8:45
+*/
+.zoom-in-out-enter {
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: center top;
+}
+
+.zoom-in-out-enter-active,.zoom-in-out-enter-done {
+  opacity: 1;
+  transform: scaleY(1);
+  transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms, opacity 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms;
+  transform-origin: center top;
+}
+
+.zoom-in-out-exit {
+  opacity: 1;
+}
+
+.zoom-in-out-exit-active,.zoom-in-out-exit-done  {
+  opacity: 0;
+  transform: scaleY(0);
+  transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms, opacity 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms;
+  transform-origin: center top;
+}

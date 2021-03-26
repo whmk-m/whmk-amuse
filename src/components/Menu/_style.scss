@@ -139,18 +139,17 @@
   transition: all 200ms linear;
 }
 .whmk-menu-sub-show {
-  display: block;
+  //display: block;
 }
 .whmk-menu-sub-hide {
-  display: none;
+  //display: none;
 }
 .whmk-sub-horizontal {
   position: absolute;
-  bottom:-2px;
   left:0;
   right: 0;
-  transition: all 200ms;
-  transform: translateY(100%);
+  top:calc(100% + 8px);
+  background: $white;
   box-shadow: $submenu-box-shadow;
   border:$menu-border-width solid $menu-border-color;
   >.whmk-menu-item {
