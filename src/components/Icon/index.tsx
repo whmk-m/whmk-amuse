@@ -15,7 +15,7 @@ const Icon:React.FC<IIconProps> = (props) => {
   } = props
 
   const classes = classNames('whmk-icon',{
-    [`whmk-icon${theme}`]:theme
+    [`whmk-icon-${theme}`]:theme
   })
 
   return (

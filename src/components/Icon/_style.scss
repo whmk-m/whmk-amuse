@@ -1,0 +1,9 @@
+/**
+* @author asus
+* @date 2021/3/25 21:05
+*/
+@each $key, $val  in $theme-colors {
+  .whmk-icon-#{$key} {
+    color: $val;
+  }
+}

@@ -160,7 +160,7 @@ function App() {
         <Icon theme={'success'} icon={faCoffee} size={'lg'} title={'咖啡ICON'}/>
         <Icon icon={faAddressBook} />
         <Icon icon='ambulance' />
-        <Icon icon='angle-double-left' />
+        <Icon icon='angle-double-left' theme={'danger'}/>
         <Icon icon={['fas','angry']}/>
       </div>
     </div>

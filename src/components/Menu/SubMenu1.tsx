@@ -1,7 +1,8 @@
-import React, {ReactNode, useContext, useEffect, useRef, useState} from 'react'
+import React, {ReactNode, useContext, useEffect, useState} from 'react'
 import classNames from "classnames";
 import {MenuContext} from './index'
 import {IMenuItemProps} from './MenuItem'
+import Icon from "../Icon";
 
 export interface ISubMenuProps {
   index?: string,
@@ -51,6 +52,7 @@ const SubMenu1: React.FC<ISubMenuProps> = (props) => {
     'whmk-submenu-horizontal': context.mode === 'horizontal',
     'is-disabled': disabled,
     'is-active': childIndexs.includes(context.activeIndex), // 只要子项有一个命中则为true
+    'is-opened': menuVisible,
     [`${className}`]: !!className,
   })
 
@@ -111,7 +113,10 @@ const SubMenu1: React.FC<ISubMenuProps> = (props) => {
         if (!disabled && context.mode === 'vertical') {
           handleClick(e)
         }
-      }}>{title}</div>
+      }}>
+        {title}
+        <Icon icon='chevron-down' className='icon-wrapper'/>
+      </div>
       <ul className={menuClasses}>
         {renderChildren()}
       </ul>
