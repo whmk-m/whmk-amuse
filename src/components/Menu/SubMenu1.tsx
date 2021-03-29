@@ -4,6 +4,7 @@ import {MenuContext} from './index'
 import {IMenuItemProps} from './MenuItem'
 import Icon from "../Icon";
 import { CSSTransition } from 'react-transition-group';
+import Transition from "../Transition";
 
 export interface ISubMenuProps {
   index?: string,
@@ -118,8 +119,8 @@ const SubMenu1: React.FC<ISubMenuProps> = (props) => {
         {title}
         <Icon icon='chevron-down' className='icon-wrapper'/>
       </div>
-      <CSSTransition
-        classNames='zoom-in-out'
+      <Transition
+        animation='zoom-in-top'
         in={menuVisible}
         timeout={200}
         unmountOnExit={true}
@@ -127,7 +128,7 @@ const SubMenu1: React.FC<ISubMenuProps> = (props) => {
         <ul className={menuClasses}>
           {renderChildren()}
         </ul>
-      </CSSTransition>
+      </Transition>
     </li>
   )
 }

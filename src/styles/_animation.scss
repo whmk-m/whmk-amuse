@@ -8,7 +8,7 @@
   transform-origin: center top;
 }
 
-.zoom-in-out-enter-active,.zoom-in-out-enter-done {
+.zoom-in-out-enter-active, .zoom-in-out-enter-done {
   opacity: 1;
   transform: scaleY(1);
   transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms, opacity 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms;
@@ -19,9 +19,14 @@
   opacity: 1;
 }
 
-.zoom-in-out-exit-active,.zoom-in-out-exit-done  {
+.zoom-in-out-exit-active, .zoom-in-out-exit-done {
   opacity: 0;
   transform: scaleY(0);
   transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms, opacity 300ms cubic-bezier(0.23, 1, 0.32, 1) 100ms;
   transform-origin: center top;
 }
+
+@include zoom-animation('top', scaleY(0), scaleY(1), center top);
+@include zoom-animation('left', scaleX(0), scaleX(1), center left);
+@include zoom-animation('right', scaleX(0), scaleX(1), center right);
+@include zoom-animation('bottom', scaleY(0), scaleY(1),  center bottom);
