@@ -1,16 +1,44 @@
-import React from "react";
+import React, {useState} from "react";
 import Button from "./components/Button";
 import Alert from "./components/Alert";
 import Menu from "./components/Menu";
 import MenuItem from "./components/Menu/MenuItem";
 import SubMenu1 from "./components/Menu/SubMenu1";
 import Icon from "./components/Icon";
+import Transition from "./components/Transition";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas, faCoffee,faAddressBook } from '@fortawesome/free-solid-svg-icons'
 library.add(fas) // 一次性导入所有的图标，接下来就可以使用字符串了
 function App() {
+  const [show,setShow] = useState<boolean>(false)
   return (
     <div className="App" style={{padding:'50px'}}>
+      <div>
+        <Button size='lg' onClick={()=>setShow(!show)}> Toggle </Button>
+        <Transition
+          in={show}
+          timeout={200}
+          animation={'zoom-in-left'}
+        >
+          <div>
+            <p>hello world! 1</p>
+            <p>hello world! 2</p>
+            <p>hello world! 3</p>
+            <p>hello world! 4</p>
+            <Button btnType='danger'>Hello word! 5</Button>
+          </div>
+        </Transition>
+        <p>单个按钮动画</p>
+        <Transition
+          in={show}
+          timeout={200}
+          animation={'zoom-in-top'}
+          wrapper
+        >
+          <Button btnType='primary'>Hello word! 5</Button>
+        </Transition>
+      </div>
+      <hr/>
       <div>
         <Button>
           默认
@@ -163,6 +191,7 @@ function App() {
         <Icon icon='angle-double-left' theme={'danger'}/>
         <Icon icon={['fas','angry']}/>
       </div>
+      <hr/>
     </div>
   );
 }

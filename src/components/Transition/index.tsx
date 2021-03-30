@@ -6,6 +6,7 @@ export type AnimationName = 'zoom-in-top' | 'zoom-in-bottom' | 'zoom-in-left' | 
 
 export type ITransitionProps<Ref extends undefined | HTMLElement = undefined> = CSSTransitionProps<Ref> & {
   animation?: AnimationName,
+  wrapper?:boolean
 }
 
 const Transition: React.FC<ITransitionProps> = (props) => {
@@ -15,6 +16,7 @@ const Transition: React.FC<ITransitionProps> = (props) => {
     children,
     unmountOnExit = true,
     timeout = 200,
+    wrapper = false,
     ...restProps
   } = props
   return (
@@ -24,7 +26,13 @@ const Transition: React.FC<ITransitionProps> = (props) => {
       timeout={timeout}
       {...restProps}
     >
-      {children}
+      {
+        wrapper ? (
+          <div>
+            {children}
+          </div>
+        ) : children
+      }
     </CSSTransition>
   )
 }
