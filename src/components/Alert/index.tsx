@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import classnames from "classnames";
+import Icon from "../Icon";
+import Transition from "../Transition";
 
 export type AlertType = 'success' | 'danger' | 'warning' | 'info'
 
@@ -27,26 +29,30 @@ const Alert: React.FC<IBaseAlertProps> = (props) => {
   const [visible, setVisible] = useState<boolean>(true)
 
   return (
-    <>
-      {
-        visible && (
-          <div className={classNames}>
-            <div className="main">
-              <div className='title'>{title}</div>
-              {description && <div className='description'>{description}</div>}
+    <Transition
+      in={visible}
+      timeout={300}
+      animation='zoom-in-top'
+    >
+      <div className={classNames}>
+        <div className="main">
+          <div className='title'>{title}</div>
+          {description && <div className='description'>{description}</div>}
+        </div>
+        {
+          closable && (
+            <div
+              className='close-icon'
+              onClick={() => {
+                setVisible(false)
+                onClose && onClose()
+              }}>
+              <Icon icon='times'/>
             </div>
-            {
-              closable && (
-                <div className='close-icon' onClick={() => {
-                  setVisible(false)
-                  onClose && onClose()
-                }}>关闭</div>
-              )
-            }
-          </div>
-        )
-      }
-    </>
+          )
+        }
+      </div>
+    </Transition>
   )
 }
 
