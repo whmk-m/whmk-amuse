@@ -1,5 +1,5 @@
 import React from "react";
-import Button, {ButtonSize, ButtonType} from "./components/Button";
+import Button from "./components/Button";
 import Alert from "./components/Alert";
 import Menu from "./components/Menu";
 import MenuItem from "./components/Menu/MenuItem";
@@ -16,11 +16,11 @@ function App() {
           默认
         </Button>
         <br/>
-        <Button btnType={ButtonType.danger} autoFocus={true}>
+        <Button btnType={'danger'} autoFocus={true}>
           primary
         </Button>
         <Button
-          btnType={ButtonType.text}
+          btnType='text'
           onClick={(e) => {
             e.preventDefault();
             alert(e.currentTarget.tagName)
@@ -28,7 +28,7 @@ function App() {
           Text Button
         </Button>
         <br/>
-        <Button size={ButtonSize.large}>
+        <Button size='lg'>
           middle
         </Button>
         <br/>
@@ -37,7 +37,7 @@ function App() {
         </Button>
         <Button
           className="App-link"
-          btnType={ButtonType.link}
+          btnType='link'
           href="http://www.baidu.com"
           target="_blank"
           rel="noopener noreferrer"

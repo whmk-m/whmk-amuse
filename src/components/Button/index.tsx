@@ -1,21 +1,9 @@
 import React from 'react'
 import classnames from "classnames";
 
-export enum ButtonSize {
-  large = 'lg',
-  middle = 'md',
-  small = 'sm'
-}
+export type ButtonSize = 'lg' | 'md' | 'sm'
 
-
-export enum ButtonType {
-  default = 'default',
-  primary = 'primary',
-  danger = 'danger',
-  link = 'link',
-  text = 'text'
-}
-
+export type ButtonType = 'default' | 'primary' | 'danger' | 'link' | 'text'
 
 interface IBaseButtonProps {
   className?: string,
@@ -56,7 +44,7 @@ const Button: React.FC<ButtonProps> = (props) => {
     'disabled': !!disabled,
     [`${className}`]: !!className
   })
-  if (btnType === ButtonType.link) {
+  if (btnType === 'link') {
     return (
       <a
         className={classNames}

@@ -1,6 +1,6 @@
 import React from 'react'
 import {fireEvent, render} from '@testing-library/react'
-import Button, {ButtonProps, ButtonSize, ButtonType} from "./index";
+import Button, {ButtonProps} from "./index";
 
 /*test('our first react test case',()=>{
   // 先模拟渲染这个组件
@@ -16,12 +16,12 @@ const defaultProps:ButtonProps = {
 }
 
 const differentProps:ButtonProps = {
-  btnType:ButtonType.danger,
-  size:ButtonSize.large
+  btnType: 'danger',
+  size: 'lg'
 }
 
 const hrefProps:ButtonProps = {
-  btnType:ButtonType.link,
+  btnType: 'link',
   href:'http://www.baidu.com',
   target:'_black'
 }
