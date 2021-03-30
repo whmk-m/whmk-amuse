@@ -39,7 +39,7 @@ type AnchorButtonProps = IBaseButtonProps & React.AnchorHTMLAttributes<HTMLEleme
 export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>
 
 /**
- * #### 这是一个按钮组件
+ * #### 按钮用于开始一个即时操作。
  * #### 使用方式：
  * ```js
  *  import { Button } from 'whmk-amuse'
