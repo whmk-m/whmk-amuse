@@ -1,15 +1,11 @@
 import React from "react";
 import {Story, Meta} from '@storybook/react/types-6-0';
 import Button, {ButtonProps} from "./index";
-import './../../styles/index.scss';
 
 
 export default {
-  title: "按钮",
+  title: "whmk-amuse/按钮",
   component: Button,
-  parameters: {
-    controls: {expanded: true},
-  },
   argTypes: {
     size: {
       defaultValue: 'md',
@@ -24,12 +20,6 @@ export default {
         type: 'inline-radio',
         options: ['default', 'primary', 'danger', 'text', 'link'],
       },
-    },
-    children: {
-      description: 'React.ReactNode'
-    },
-    href: {
-      description: '当btnType="link"时需要'
     },
     onClick: {
       action: 'clicked'
@@ -49,6 +39,8 @@ Default.args = {
   },*/
 }
 
+Default.storyName = 'Default 默认配置'
+
 export const Link = Template.bind({})
 Link.args = {
   children: '百度一下',
@@ -61,3 +53,4 @@ Link.args = {
     alert('点击')
   },*/
 }
+Link.storyName = 'Link 链接组件'

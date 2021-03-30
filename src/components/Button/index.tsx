@@ -6,11 +6,21 @@ export type ButtonSize = 'lg' | 'md' | 'sm'
 export type ButtonType = 'default' | 'primary' | 'danger' | 'link' | 'text'
 
 interface IBaseButtonProps {
+  /**
+   * 自定义类名
+   */
   className?: string,
+  /** 是否禁用 */
   disabled?: boolean,
+  /** 尺寸 */
   size?: ButtonSize,
+  /** 类型 */
   btnType?: ButtonType,
+  /**  当btnType="link"时需要  */
   href?: string,
+  /**
+   * React.ReactNode
+   */
   children: React.ReactNode,
 }
 
@@ -28,10 +38,19 @@ type AnchorButtonProps = IBaseButtonProps & React.AnchorHTMLAttributes<HTMLEleme
 // 结合成最终的button类型
 export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>
 
+/**
+ * #### 这是一个按钮组件
+ * #### 使用方式：
+ * ```js
+ *  import { Button } from 'whmk-amuse'
+ * ```
+ * @param props
+ * @constructor
+ */
 const Button: React.FC<ButtonProps> = (props) => {
   const {
     className,
-    disabled,
+    disabled = false,
     size,
     btnType,
     href,
