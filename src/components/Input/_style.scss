@@ -2,3 +2,109 @@
 * @author asus
 * @date 2021/3/31 8:33
 */
+.whmk-input-container {
+  display: flex;
+  align-content: center;
+  &-sm{
+    .whmk-input-wrapper {
+      .whmk-input-clean-icon {
+        right: $input-padding-x-sm;
+      }
+      .whmk-input-have-clean {
+        padding-right: 2*$input-padding-x-sm + $iconWidth
+      }
+    }
+  }
+  &-md{
+    .whmk-input-wrapper {
+      .whmk-input-clean-icon {
+        right: $input-padding-x;
+      }
+      .whmk-input-have-clean {
+        padding-right: 2*$input-padding-x + $iconWidth
+      }
+    }
+  }
+  &-lg{
+    .whmk-input-wrapper {
+      .whmk-input-clean-icon {
+        right: $input-padding-x-lg;
+      }
+      .whmk-input-have-clean {
+        padding-right: 2*$input-padding-x-lg + $iconWidth
+      }
+    }
+  }
+}
+.whmk-input-prefix,.whmk-input-suffix {
+
+}
+.whmk-input-wrapper {
+  display: flex;
+  align-content: center;
+  position: relative;
+  flex: 1;
+  .whmk-input-clean-icon {
+    position: absolute;
+    width: $iconWidth;
+    height: $iconHeight;
+    color: $gray-500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 0;
+    top:calc(50% - #{$iconHeight/2});
+    cursor: pointer;
+    transition: color .2s;
+    &:hover {
+      color: $gray-600;
+    }
+  }
+}
+.whmk-input{
+  display: flex;
+  flex:1;
+  align-content: center;
+  justify-content: flex-start;
+  line-height: $input-line-height;
+  border: $input-border-width solid $input-border-color;
+  font-weight: $input-font-weight;
+  font-family: $input-font-family;
+  font-size: $input-font-size;
+  color:$input-color;
+  outline: none;
+  background-color: $input-bg;
+  box-shadow: $input-box-shadow;
+  &:hover,&:active,&:focus{
+    box-shadow: $input-focus-box-shadow;
+    border-color:$input-focus-border-color;
+  }
+}
+.whmk-input-md {
+  padding:$input-padding-y $input-padding-x;
+  border-radius: $input-border-radius;
+  font-size: 14px;
+}
+.whmk-input-sm {
+  padding:$input-padding-y-sm $input-padding-x-sm;
+  border-radius: $input-border-radius-sm;
+  font-size: 12px;
+}
+.whmk-input-lg {
+  padding:$input-padding-y-lg $input-padding-x-lg;
+  border-radius: $input-border-radius-lg;
+  font-size: 16px;
+}
+.whmk-input-disabled {
+  background-color: $input-disabled-bg;
+  border-color: $input-disabled-border-color;
+  cursor: not-allowed;
+  &:hover,&:active,&:focus{
+    box-shadow: unset;
+    border-color: $input-disabled-border-color;
+  }
+  + .whmk-input-clean-icon {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

@@ -253,7 +253,7 @@ $input-font-size-lg:                    $btn-font-size-lg !default;
 
 $input-bg:                              $white !default;
 $input-disabled-bg:                     $gray-200 !default;
-$input-disabled-border-color:           null !default;
+$input-disabled-border-color:           $gray-500 !default;
 
 $input-color:                           $gray-700 !default;
 $input-border-color:                    $gray-400 !default;
@@ -290,3 +290,6 @@ $progress-bg:                       $gray-200 !default;
 $progress-border-radius:            $border-radius !default;
 $progress-bar-color:                $white !default;
 $progress-bar-transition:           width .6s ease !default;
+
+$iconWidth: 1rem;
+$iconHeight:1rem;

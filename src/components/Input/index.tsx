@@ -1,18 +1,19 @@
-import React, {HTMLAttributes, InputHTMLAttributes, ReactElement, ReactNode} from 'react'
+import React, {InputHTMLAttributes, ReactElement } from 'react'
 import classNames from "classnames";
+import Icon from "../Icon";
 
 export type InputSize = 'lg' | 'md' | 'sm'
 
-type Extract<T,P extends keyof any> = T extends P ? never : T
+type Extract<T, P extends keyof any> = T extends P ? never : T
 
-type Pick<T,K extends keyof T> = {
+type Pick<T, K extends keyof T> = {
   [P in K]: T[P]
 }
 
-type Omit<T,P extends keyof T> = Pick<T, Extract<keyof T, P>>
+type Omit<T, P extends keyof T> = Pick<T, Extract<keyof T, P>>
 
 // @ts-ignore
-export interface IInputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size' | 'onChange'>{
+export interface IInputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size' | 'onChange'> {
   /**
    * 控件大小
    */
@@ -44,20 +45,53 @@ export interface IInputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'siz
   /**
    * onChange 输入框内容变化时的回调
    */
-  onChange?: (e: MouseEvent) => void
+  onChange?: (e: React.ChangeEvent) => void
 }
 
-const Input:React.FC<IInputProps> = (props)=>{
+const Input: React.FC<IInputProps> = (props) => {
   const {
-
+    size,
+    disabled,
+    allowClear,
+    prefix,
+    suffix,
+    value,
+    defaultValue,
+    onChange
   } = props
+
+  const inputClasses = classNames('whmk-input', {
+    [`whmk-input-${size}`]: !!size,
+    ['whmk-input-disabled']: disabled,
+    ['whmk-input-have-clean']: allowClear,
+  })
+
+  const containerClasses = classNames('whmk-input-container',{
+    [`whmk-input-container-${size}`]: !!size,
+  })
+
 
 
   return (
-    <div>
-
+    <div className={containerClasses}>
+      {prefix && <span className='whmk-input-prefix'>{prefix}</span>}
+      <span className='whmk-input-wrapper'>
+        <input type="text" className={inputClasses} onChange={onChange} disabled={disabled}/>
+        {allowClear && (
+          <span className='whmk-input-clean-icon'>
+            <Icon icon='times-circle'/>
+          </span>
+        )}
+      </span>
+      {suffix && <span className='whmk-input-suffix'>{suffix}</span>}
     </div>
   )
+}
+
+Input.defaultProps = {
+  size: 'md',
+  disabled: false,
+  allowClear: true
 }
 
 export default Input
