@@ -1,6 +1,7 @@
-import React, {InputHTMLAttributes, ReactElement } from 'react'
+import React, {InputHTMLAttributes, ReactElement, useEffect, useState} from 'react'
 import classNames from "classnames";
 import Icon from "../Icon";
+import {type} from "os";
 
 export type InputSize = 'lg' | 'md' | 'sm'
 
@@ -57,8 +58,29 @@ const Input: React.FC<IInputProps> = (props) => {
     suffix,
     value,
     defaultValue,
-    onChange
+    onChange,
+    ...restProps
   } = props
+
+  const initInputValue = () => {
+    if (typeof value !== 'undefined') {
+      return value
+    }
+    if (typeof defaultValue !== 'undefined') {
+      return defaultValue
+    }
+    return ''
+  }
+  console.log('input value 渲染：', value);
+  const [inputValue, setInputValue] = useState<string | undefined>(initInputValue)
+
+  useEffect(() => {
+    console.log('input value 更新：', value);
+    if (typeof value !== 'undefined') {
+      setInputValue(value)
+      return
+    }
+  }, [value])
 
   const inputClasses = classNames('whmk-input', {
     [`whmk-input-${size}`]: !!size,
@@ -66,19 +88,36 @@ const Input: React.FC<IInputProps> = (props) => {
     ['whmk-input-have-clean']: allowClear,
   })
 
-  const containerClasses = classNames('whmk-input-container',{
+  const containerClasses = classNames('whmk-input-container', {
     [`whmk-input-container-${size}`]: !!size,
   })
 
+  const handleChange = (e: React.ChangeEvent) => {
+    if (typeof value !== 'undefined' && value !== '') {
+      onChange && onChange(e)
+      return
+    }
+    onChange ? onChange(e) : setInputValue(e.target.value)
+  }
 
+  const handleClean = (e: React.MouseEvent) => {
+    onChange ? onChange({target: {value: ''}}) : setInputValue('')
+  }
 
   return (
     <div className={containerClasses}>
       {prefix && <span className='whmk-input-prefix'>{prefix}</span>}
       <span className='whmk-input-wrapper'>
-        <input type="text" className={inputClasses} onChange={onChange} disabled={disabled}/>
+        <input
+          type="text"
+          value={inputValue}
+          className={inputClasses}
+          onChange={handleChange}
+          disabled={disabled}
+          {...restProps}
+        />
         {allowClear && (
-          <span className='whmk-input-clean-icon'>
+          <span className='whmk-input-clean-icon' onClick={handleClean}>
             <Icon icon='times-circle'/>
           </span>
         )}

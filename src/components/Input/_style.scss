@@ -6,6 +6,12 @@
   display: flex;
   align-content: center;
   &-sm{
+    .whmk-input-prefix {
+      border-radius: $input-border-radius-sm 0 0 $input-border-radius-sm;
+    }
+    .whmk-input-suffix {
+      border-radius: 0 $input-border-radius-sm $input-border-radius-sm 0;
+    }
     .whmk-input-wrapper {
       .whmk-input-clean-icon {
         right: $input-padding-x-sm;
@@ -16,6 +22,12 @@
     }
   }
   &-md{
+    .whmk-input-prefix {
+      border-radius: $input-border-radius 0 0 $input-border-radius;
+    }
+    .whmk-input-suffix {
+      border-radius: 0 $input-border-radius $input-border-radius 0;
+    }
     .whmk-input-wrapper {
       .whmk-input-clean-icon {
         right: $input-padding-x;
@@ -26,6 +38,12 @@
     }
   }
   &-lg{
+    .whmk-input-prefix {
+      border-radius: $input-border-radius-lg 0 0 $input-border-radius-lg;
+    }
+    .whmk-input-suffix {
+      border-radius: 0 $input-border-radius-lg $input-border-radius-lg 0;
+    }
     .whmk-input-wrapper {
       .whmk-input-clean-icon {
         right: $input-padding-x-lg;
@@ -35,9 +53,6 @@
       }
     }
   }
-}
-.whmk-input-prefix,.whmk-input-suffix {
-
 }
 .whmk-input-wrapper {
   display: flex;
@@ -107,4 +122,24 @@
     cursor: not-allowed;
     pointer-events: none;
   }
+}
+.whmk-input-prefix,.whmk-input-suffix {
+  display: flex;
+  flex:0;
+  align-items: center;
+  background-color: $input-group-addon-bg;
+  color: $input-group-addon-color;
+  border:$input-border-width solid $input-group-addon-border-color;
+  padding: 0 $input-padding-x;
+}
+.whmk-input-prefix {
+  border-right-color: transparent;
+  + .whmk-input-wrapper {
+    .whmk-input {
+      border-radius: 0;
+    }
+  }
+}
+.whmk-input-suffix {
+  border-left-color: transparent;
 }
