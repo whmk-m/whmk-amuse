@@ -1,7 +1,6 @@
-import React, {InputHTMLAttributes, ReactElement, useEffect, useState} from 'react'
+import React, {InputHTMLAttributes, ReactElement, useEffect, useRef, useState} from 'react'
 import classNames from "classnames";
 import Icon from "../Icon";
-import {type} from "os";
 
 export type InputSize = 'lg' | 'md' | 'sm'
 
@@ -46,7 +45,11 @@ export interface IInputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'siz
   /**
    * onChange 输入框内容变化时的回调
    */
-  onChange?: (e: React.ChangeEvent) => void
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  /**
+   * onClean 输入框内容清空的回调
+   */
+  onClean?: () => void
 }
 
 const Input: React.FC<IInputProps> = (props) => {
@@ -59,6 +62,7 @@ const Input: React.FC<IInputProps> = (props) => {
     value,
     defaultValue,
     onChange,
+    onClean,
     ...restProps
   } = props
 
@@ -92,16 +96,12 @@ const Input: React.FC<IInputProps> = (props) => {
     [`whmk-input-container-${size}`]: !!size,
   })
 
-  const handleChange = (e: React.ChangeEvent) => {
-    if (typeof value !== 'undefined' && value !== '') {
-      onChange && onChange(e)
-      return
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange ? onChange(e) : setInputValue(e.target.value)
   }
 
   const handleClean = (e: React.MouseEvent) => {
-    onChange ? onChange({target: {value: ''}}) : setInputValue('')
+    onClean ? onClean() : setInputValue('')
   }
 
   return (
