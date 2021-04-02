@@ -75,11 +75,11 @@ const Input: React.FC<IInputProps> = (props) => {
     }
     return ''
   }
-  console.log('input value 渲染：', value);
+  // console.log('input value 渲染：', value);
   const [inputValue, setInputValue] = useState<string | undefined>(initInputValue)
 
   useEffect(() => {
-    console.log('input value 更新：', value);
+    // console.log('input value 更新：', value);
     if (typeof value !== 'undefined') {
       setInputValue(value)
       return
@@ -130,7 +130,7 @@ const Input: React.FC<IInputProps> = (props) => {
 Input.defaultProps = {
   size: 'md',
   disabled: false,
-  allowClear: true
+  allowClear: false
 }
 
 export default Input
