@@ -15,7 +15,6 @@ export default {
   },
 } as Meta
 
-
 const Template: Story<IInputProps> = (props) => <Input {...props}/>
 
 
