@@ -87,7 +87,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
       return []
     }
     return filterDataSource(options)
-  }, [])
+  }, [options])
 
   const [inputValue, setInputValue] = useState<string>(initInputValue)
   const [dataSource, setDataSource] = useState<Array<IOption>>(initDataSource)
