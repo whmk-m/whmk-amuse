@@ -45,6 +45,12 @@ export interface IAutoCompleteProps {
    * 是否禁用
    */
   disabled?: boolean,
+  /**
+   * renderOption 是一个函数，用于自定义渲染每个条目, 接受两个参数, 并返回一个 ReactElement
+   * @param option 当前循环项 option
+   * @param index 当前项的索引
+   */
+  renderOption?: (option: IOption, index: number) => React.ReactElement,
 }
 
 const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
@@ -56,7 +62,8 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     onSearch,
     options,
     filterOption,
-    disabled
+    disabled,
+    renderOption
   } = props
 
   const filterDataSource = (dataArray: Array<IOption>) => {
@@ -113,6 +120,20 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     onSearch && onSearch(value)
   }
 
+  /**
+   * 自定义渲染条目
+   */
+  const customRenderOption = () => {
+    if (typeof renderOption !== 'function') return null
+    return (
+      <div className="whmk-autocomplete-custom-list">
+        {
+          dataSource.map((option, index) => renderOption(option, index))
+        }
+      </div>
+    )
+  }
+
   return (
     <div className='whmk-autocomplete-wrapper'>
       <div className='whmk-autocomplete-input-area'>
@@ -120,18 +141,20 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
       </div>
       {
         dataSource.length > 0 && (
-          <ul className='whmk-autocomplete-list'>
-            {
-              dataSource.map((option, index) => (
-                <li
-                  className='whmk-autocomplete-option'
-                  key={index}
-                  onClick={() => handleSelect(option.value, option)}>
-                  {option.label}
-                </li>
-              ))
-            }
-          </ul>
+          typeof renderOption === 'function' ? customRenderOption() : (
+            <ul className='whmk-autocomplete-list'>
+              {
+                dataSource.map((option, index) => (
+                  <li
+                    className='whmk-autocomplete-option'
+                    key={index}
+                    onClick={() => handleSelect(option.value, option)}>
+                    {option.label}
+                  </li>
+                ))
+              }
+            </ul>
+          )
         )
       }
     </div>
