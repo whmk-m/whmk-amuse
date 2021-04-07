@@ -172,3 +172,37 @@ export const DebounceAutoComplete = () => {
   )
 }
 DebounceAutoComplete.storyName = 'Debounce AutoComplete'
+
+
+export const DefaultValueAutoComplete = () => {
+  const [value, setValue] = useState('Zhao Si')
+  const [options, setOptions] = useState<Array<IOption>>([
+    mockOption('Zhang San'),
+    mockOption('Li Si'),
+    mockOption('Wang Wu'),
+    mockOption('Zhao Si'),
+    mockOption('Wang Xi Zhi'),
+  ])
+
+  const handleChange = (searchText: string) => {
+    console.log('onChange', searchText)
+    setValue(searchText)
+  }
+
+  const handleSearch = (searchText: string) => {
+    console.log('onSearch', searchText)
+    setOptions(
+      !searchText ? [] : [mockOption(searchText), mockOption(searchText, 2), mockOption(searchText, 3)],
+    );
+  }
+  return (
+    <AutoComplete
+      options={options}
+      onChange={handleChange}
+      onSearch={handleSearch}
+      value={value}
+      // defaultValue={'Zhao Si'}
+    />
+  )
+}
+DefaultValueAutoComplete.storyName = 'DefaultValue AutoComplete'

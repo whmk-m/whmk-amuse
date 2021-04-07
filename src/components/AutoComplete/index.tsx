@@ -103,24 +103,34 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     return filterDataSource(options)
   }, [options])
 
+  const findSelectedOption = (value:string) => {
+    const selectedItem = options?.find(item => item.value === value)
+    selectedItem && setSelectedOption(selectedItem)
+  }
+
   const [inputValue, setInputValue] = useState<string>(initInputValue)
   const [dataSource, setDataSource] = useState<Array<IOption>>(initDataSource)
+  const [selectedOption, setSelectedOption] = useState<IOption | null>(null)
+
   // 防抖函数
-  const debounceHandleSearch = useMemo(()=> {
+  const debounceHandleSearch = useMemo(() => {
     console.log('debounceHandleSearch:');
     return debounce(onSearch, wait)
   }, [])
   useEffect(() => {
     setDataSource(initDataSource())
+    findSelectedOption(inputValue)
   }, [options])
 
   useEffect(() => {
     if (typeof value !== 'undefined') {
       setInputValue(value)
+      findSelectedOption(value)
     }
   }, [value])
 
   const handleSelect = (value: string, option: IOption) => {
+    setSelectedOption({...option})
     onChange ? onChange(value) : setInputValue(value)
     onSelect && onSelect(value, option)
   }
@@ -157,7 +167,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
               {
                 dataSource.map((option, index) => (
                   <li
-                    className='whmk-autocomplete-option'
+                    className={`whmk-autocomplete-option ${selectedOption?.value === option.value ? 'whmk-autocomplete-selected-option' : ''}`}
                     key={index}
                     onClick={() => handleSelect(option.value, option)}>
                     {option.label}

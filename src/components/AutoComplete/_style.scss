@@ -2,3 +2,17 @@
 * @author asus
 * @date 2021/4/5 11:11
 */
+.whmk-autocomplete-list {
+  list-style: none;
+  padding: 0;
+}
+.whmk-autocomplete-option {
+  margin: 0;
+  cursor: pointer;
+  line-height: 22px;
+  padding: $input-padding-x $input-padding-y;
+}
+.whmk-autocomplete-selected-option {
+  color: $primary;
+  background-color: #e9f4ff;
+}
