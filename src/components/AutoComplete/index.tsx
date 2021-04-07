@@ -3,6 +3,7 @@ import classNames from "classnames";
 import Input from "../Input";
 import {debounce} from './../../utils'
 import {useDebounce} from './../../hooks'
+import Transition from "../Transition";
 
 export interface IOption {
   value: string
@@ -111,6 +112,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
   const [inputValue, setInputValue] = useState<string>(initInputValue)
   const [dataSource, setDataSource] = useState<Array<IOption>>(initDataSource)
   const [selectedOption, setSelectedOption] = useState<IOption | null>(null)
+  const [listVisible,setListVisible] = useState<boolean>(false)
 
   // 防抖函数
   const debounceHandleSearch = useMemo(() => {
@@ -133,6 +135,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     setSelectedOption({...option})
     onChange ? onChange(value) : setInputValue(value)
     onSelect && onSelect(value, option)
+    setListVisible(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,10 +161,15 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
   return (
     <div className='whmk-autocomplete-wrapper'>
       <div className='whmk-autocomplete-input-area'>
-        <Input value={inputValue} onChange={handleChange} disabled={disabled}/>
+        <Input value={inputValue} onChange={handleChange} onFocus={()=>setListVisible(true)} disabled={disabled}/>
       </div>
-      {
-        dataSource.length > 0 && (
+      <Transition
+        animation='zoom-in-top'
+        in={dataSource.length > 0 && listVisible}
+        timeout={200}
+        unmountOnExit={true}
+      >
+        {
           typeof renderOption === 'function' ? customRenderOption() : (
             <ul className='whmk-autocomplete-list'>
               {
@@ -176,8 +184,8 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
               }
             </ul>
           )
-        )
-      }
+        }
+      </Transition>
     </div>
   )
 }

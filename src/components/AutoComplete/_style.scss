@@ -3,6 +3,12 @@
 * @date 2021/4/5 11:11
 */
 .whmk-autocomplete-list {
+  background-color: #fff;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+}
+.whmk-autocomplete-list {
   list-style: none;
   padding: 0;
 }
