@@ -1,6 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import classNames from "classnames";
 import Input from "../Input";
+import {debounce} from './../../utils'
+import {useDebounce} from './../../hooks'
 
 export interface IOption {
   value: string
@@ -51,6 +53,10 @@ export interface IAutoCompleteProps {
    * @param index 当前项的索引
    */
   renderOption?: (option: IOption, index: number) => React.ReactElement,
+  /**
+   * 延迟 xxx ms执行onSearch函数，默认不延迟
+   */
+  wait?: number
 }
 
 const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
@@ -63,7 +69,8 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     options,
     filterOption,
     disabled,
-    renderOption
+    renderOption,
+    wait,
   } = props
 
   const filterDataSource = (dataArray: Array<IOption>) => {
@@ -98,7 +105,11 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
 
   const [inputValue, setInputValue] = useState<string>(initInputValue)
   const [dataSource, setDataSource] = useState<Array<IOption>>(initDataSource)
-
+  // 防抖函数
+  const debounceHandleSearch = useMemo(()=> {
+    console.log('debounceHandleSearch:');
+    return debounce(onSearch, wait)
+  }, [])
   useEffect(() => {
     setDataSource(initDataSource())
   }, [options])
@@ -117,7 +128,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     onChange ? onChange(value) : setInputValue(value)
-    onSearch && onSearch(value)
+    wait === 0 ? onSearch && onSearch(value) : debounceHandleSearch && debounceHandleSearch(value)
   }
 
   /**
@@ -164,6 +175,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
 AutoComplete.defaultProps = {
   disabled: false,
   filterOption: true,
+  wait: 0
 }
 
 export default AutoComplete
