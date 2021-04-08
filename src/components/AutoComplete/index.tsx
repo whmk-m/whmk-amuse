@@ -60,6 +60,18 @@ export interface IAutoCompleteProps {
   wait?: number
 }
 
+/**
+ * ## AutoComplete自动完成
+ *输入框自动完成功能。
+ *何时使用#
+ *需要一个输入框而不是选择器。
+ *需要输入建议/辅助提示。
+ *和 Select 的区别是：
+ *AutoComplete 是一个带提示的文本输入框，用户可以自由输入，关键词是辅助输入。
+ *Select 是在限定的可选项中进行选择，关键词是选择。
+ * @param props
+ * @constructor
+ */
 const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
   const {
     value,
@@ -74,6 +86,10 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     wait,
   } = props
 
+  /**
+   * 根据filterOption条件过滤传入的数组
+   * @param dataArray 返回过滤后的新数组
+   */
   const filterDataSource = (dataArray: Array<IOption>) => {
     if (dataArray.length === 0) return []
     return dataArray.filter(item => {
@@ -87,6 +103,9 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     })
   }
 
+  /**
+   * 初始化传入value和defaultValue
+   */
   const initInputValue = useCallback(() => {
     if (typeof value !== 'undefined') {
       return value
@@ -97,6 +116,9 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     return ''
   }, [])
 
+  /**
+   * 初始化传入的options数据源，并且根据filterOption条件进行过滤
+   */
   const initDataSource = useCallback(() => {
     if (!Array.isArray(options)) {
       return []
@@ -104,55 +126,112 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
     return filterDataSource(options)
   }, [options])
 
-  const findSelectedOption = (value:string) => {
-    const selectedItem = options?.find(item => item.value === value)
+  /**
+   * 在数组中根据提供的value找到其完整的项
+   * @param arr 数组
+   * @param value 值
+   */
+  const findSelectedOption = (arr: Array<IOption>, value: string) => {
+    const selectedItem = arr?.find(item => item.value === value)
     selectedItem && setSelectedOption(selectedItem)
   }
 
   const [inputValue, setInputValue] = useState<string>(initInputValue)
   const [dataSource, setDataSource] = useState<Array<IOption>>(initDataSource)
   const [selectedOption, setSelectedOption] = useState<IOption | null>(null)
-  const [listVisible,setListVisible] = useState<boolean>(false)
+  const [listVisible, setListVisible] = useState<boolean>(false)
   const autocompleteWrapper = useRef(null)
   // 点击组件外部区域关闭list
   const isContains = useClickOutside(autocompleteWrapper)
 
+  // 使用键盘上下方向键选择是时，进行高亮的option的索引
+  const [hightLightIndex, setHightLightIndex] = useState<number>(-1)
+
   // 防抖函数
   const debounceHandleSearch = useMemo(() => {
-    console.log('debounceHandleSearch:');
+    // console.log('debounceHandleSearch:');
     return debounce(onSearch, wait)
   }, [])
 
   // 监听是否点击了组件外部区域去关闭list
-  useEffect(()=>{
+  useEffect(() => {
     if (!isContains) {
+      setHightLightIndex(-1)
       setListVisible(false)
     }
-  },[isContains])
+  }, [isContains])
 
+  // 监听options prop发生改变时更新数组源
   useEffect(() => {
-    setDataSource(initDataSource())
-    findSelectedOption(inputValue)
+    const list = initDataSource()
+    setDataSource(list)
+    findSelectedOption(list, inputValue)
   }, [options])
 
+  // 监听value prop发生改变时更新inputValue
   useEffect(() => {
     if (typeof value !== 'undefined') {
       setInputValue(value)
-      findSelectedOption(value)
+      findSelectedOption(dataSource, value)
     }
   }, [value])
 
+  // 选中某一选项，并且调用回调
   const handleSelect = (value: string, option: IOption) => {
+    setHightLightIndex(-1)
     setSelectedOption({...option})
     onChange ? onChange(value) : setInputValue(value)
     onSelect && onSelect(value, option)
     setListVisible(false)
   }
 
+  // 选中 option 或 input 的value 变化时，调用此函数，如果提供了wait的值，将使用防抖函数封装一层
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     onChange ? onChange(value) : setInputValue(value)
     wait === 0 ? onSearch && onSearch(value) : debounceHandleSearch && debounceHandleSearch(value)
+  }
+
+  // 计算当前应该高亮的选项的index
+  const calcHighLightIndex = (index: number) => {
+    let lightIndex = index
+    if (index < 0) {
+      lightIndex = 0
+    }
+    if (index >= dataSource.length) {
+      lightIndex = dataSource.length - 1
+    }
+    setHightLightIndex(lightIndex)
+  }
+
+  // 为autoComplete input 输入框添加键盘事件，分别为 上下方向键、enter确认键、esc取消键，各自执行不同的操作
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    console.log(e.code)
+    switch (e.code) {
+      case 'ArrowUp' :
+        e.preventDefault()
+        e.stopPropagation()
+        calcHighLightIndex(hightLightIndex - 1)
+        break;
+      case 'ArrowDown' :
+        e.preventDefault()
+        e.stopPropagation()
+        calcHighLightIndex(hightLightIndex + 1)
+        break;
+      case 'Enter' :
+        if (dataSource.length === 0) return
+        const option = dataSource[hightLightIndex]
+        handleSelect(option.value, option)
+        break;
+      case 'Escape' :
+        setInputValue('')
+        setHightLightIndex(-1)
+        setListVisible(false)
+        wait === 0 ? setDataSource([]) : setTimeout(() => setDataSource([]), wait)
+        break;
+      default:
+        break
+    }
   }
 
   /**
@@ -172,7 +251,13 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
   return (
     <div className='whmk-autocomplete-wrapper' ref={autocompleteWrapper}>
       <div className='whmk-autocomplete-input-area'>
-        <Input value={inputValue} onChange={handleChange} onFocus={()=>setListVisible(true)} disabled={disabled}/>
+        <Input
+          value={inputValue}
+          onChange={handleChange}
+          onClick={() => setListVisible(true)}
+          disabled={disabled}
+          onKeyDown={handleKeyDown}
+        />
       </div>
       <Transition
         animation='zoom-in-top'
@@ -184,14 +269,21 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
           typeof renderOption === 'function' ? customRenderOption() : (
             <ul className='whmk-autocomplete-list'>
               {
-                dataSource.map((option, index) => (
-                  <li
-                    className={`whmk-autocomplete-option ${selectedOption?.value === option.value ? 'whmk-autocomplete-selected-option' : ''}`}
-                    key={index}
-                    onClick={() => handleSelect(option.value, option)}>
-                    {option.label}
-                  </li>
-                ))
+                dataSource.map((option, index) => {
+                  const optionClasses = classNames('whmk-autocomplete-option', {
+                    'whmk-autocomplete-hover-option': hightLightIndex === index,
+                    'whmk-autocomplete-selected-option': selectedOption?.value === option.value
+                  })
+                  return (
+                    <li
+                      onMouseEnter={() => setHightLightIndex(listVisible ? index : -1)}
+                      className={optionClasses}
+                      key={index}
+                      onClick={() => handleSelect(option.value, option)}>
+                      {option.label}
+                    </li>
+                  )
+                })
               }
             </ul>
           )

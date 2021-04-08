@@ -126,6 +126,7 @@ export const RenderOptionAutoComplete = () => {
       <h4
         className={`custom-option-${index}`}
         onClick={() => handleSelect(option.value, option)}
+        key={index}
       >
         {option.label}
       </h4>

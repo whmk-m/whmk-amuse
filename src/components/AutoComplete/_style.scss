@@ -18,7 +18,13 @@
   line-height: 22px;
   padding: $input-padding-x $input-padding-y;
 }
+.whmk-autocomplete-hover-option {
+  background-color: #f1f1f1;
+}
 .whmk-autocomplete-selected-option {
   color: $primary;
   background-color: #e9f4ff;
+  &:hover{
+    background-color: #e9f4ff;
+  }
 }
