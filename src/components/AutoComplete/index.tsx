@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import classNames from "classnames";
 import Input from "../Input";
 import {debounce} from './../../utils'
-import {useDebounce} from './../../hooks'
+import {useClickOutside} from './../../hooks'
 import Transition from "../Transition";
 
 export interface IOption {
@@ -113,12 +113,23 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
   const [dataSource, setDataSource] = useState<Array<IOption>>(initDataSource)
   const [selectedOption, setSelectedOption] = useState<IOption | null>(null)
   const [listVisible,setListVisible] = useState<boolean>(false)
+  const autocompleteWrapper = useRef(null)
+  // 点击组件外部区域关闭list
+  const isContains = useClickOutside(autocompleteWrapper)
 
   // 防抖函数
   const debounceHandleSearch = useMemo(() => {
     console.log('debounceHandleSearch:');
     return debounce(onSearch, wait)
   }, [])
+
+  // 监听是否点击了组件外部区域去关闭list
+  useEffect(()=>{
+    if (!isContains) {
+      setListVisible(false)
+    }
+  },[isContains])
+
   useEffect(() => {
     setDataSource(initDataSource())
     findSelectedOption(inputValue)
@@ -159,7 +170,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
   }
 
   return (
-    <div className='whmk-autocomplete-wrapper'>
+    <div className='whmk-autocomplete-wrapper' ref={autocompleteWrapper}>
       <div className='whmk-autocomplete-input-area'>
         <Input value={inputValue} onChange={handleChange} onFocus={()=>setListVisible(true)} disabled={disabled}/>
       </div>
