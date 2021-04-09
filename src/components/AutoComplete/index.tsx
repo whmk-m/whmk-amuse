@@ -289,6 +289,14 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
           )
         }
       </Transition>
+      <Transition
+        animation='zoom-in-top'
+        in={dataSource.length === 0 && !!inputValue && listVisible}
+        timeout={200}
+        unmountOnExit={true}
+      >
+        <div className={'whmk-autocomplete-no-data'}>暂无匹配数据</div>
+      </Transition>
     </div>
   )
 }

@@ -2,7 +2,11 @@ import React from "react";
 import {render, fireEvent, RenderResult, waitFor} from '@testing-library/react'
 import Menu, {IMenuProps} from "./index";
 import MenuItem from "./MenuItem";
-import SubMenu1, {ISubMenuProps} from "./SubMenu1";
+import SubMenu1 from "./SubMenu1";
+//  引入图标文件
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+library.add(fas) // 一次性导入所有的图标，接下来就可以使用字符串了
 
 const activeProps: IMenuProps = {
   defaultIndex: '2',

@@ -7,6 +7,7 @@
   border: $border-width solid $border-color;
   border-radius: $border-radius;
   box-shadow: $box-shadow;
+  margin-top: 1rem;
 }
 .whmk-autocomplete-list {
   list-style: none;
@@ -17,6 +18,19 @@
   cursor: pointer;
   line-height: 22px;
   padding: $input-padding-x $input-padding-y;
+}
+.whmk-autocomplete-no-data {
+  margin-top: 1rem;
+  background-color: #fff;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $gray-500;
+  font-size: 14px;
 }
 .whmk-autocomplete-hover-option {
   background-color: #f1f1f1;

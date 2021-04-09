@@ -3,7 +3,6 @@ import {Story, Meta} from '@storybook/react/types-6-0';
 import AutoComplete, {IAutoCompleteProps, IOption} from "./index";
 import Input from "../Input";
 
-
 export default {
   title: "whmk-amuse/AutoComplete",
   component: AutoComplete,

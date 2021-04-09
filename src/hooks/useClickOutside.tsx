@@ -4,12 +4,12 @@ interface MutableRefObject<T> {
   current: T;
 }
 
-const useClickOutside = (wrapper: MutableRefObject<any>) => {
+const useClickOutside = (wrapper: MutableRefObject<HTMLElement | null>) => {
   let [isContains, setContains] = useState<boolean>(false)
 
   const clickOutside = (e: MouseEvent) => {
-    // @ts-ignore
-    const contains = (wrapper.current as unknown as HTMLElement).contains(e.target)
+    if (!wrapper.current) return;
+    const contains = wrapper.current.contains(e.target as HTMLElement)
     setContains(contains)
   }
 
