@@ -36,9 +36,9 @@ class UploadHttp {
       responseType = 'json'
     } = this.config
     const xhr = this.xhr, uploader = xhr.upload
-    xhr.open('POST', action, true)
     xhr.timeout = timeout;
     xhr.responseType = responseType
+    xhr.open('POST', action, true)
     xhr.setRequestHeader('Content-Type', 'multipart/form-data')
     const formData = new FormData()
     const fileList = Array.from(files)
