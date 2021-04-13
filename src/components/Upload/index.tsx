@@ -4,7 +4,8 @@ import UploadHttp, {IUploadHttpProps} from "../../utils/upload";
 import Button from "../Button";
 
 export interface IUploadProps extends Omit<IUploadHttpProps, 'files'> {
-  beforeUpload?: (files: FileList) => boolean
+  beforeUpload?: (files: FileList) => boolean,
+  onChange?:(files:FileList) => void
 }
 
 
@@ -20,8 +21,8 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     onTimeOut,
     responseType,
     beforeUpload,
+    onChange,
   } = props
-
 
 
   useImperativeHandle(ref, () => ({
@@ -35,10 +36,11 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     inputRef.current && inputRef.current.click()
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
-    if (!beforeUpload || beforeUpload(files)) {
+    onChange && onChange(files)
+    if (!beforeUpload || await beforeUpload(files)) {
       uploadFiles(files)
     }
   }
