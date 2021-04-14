@@ -1,13 +1,20 @@
+export interface FileItem {
+  row: File,
+  [key:string]:any
+}
+
+export type FileList = FileItem[]
+
 export interface IUploadHttpProps {
   action: string,
   onProgress?: (loaded: number, total: number, files: FileList) => void
-  onSuccess?: (res: XMLHttpRequest) => void
-  onFail?: (err: XMLHttpRequest) => void
+  onSuccess?: (files: FileList) => void
+  onFail?: (files: FileList) => void
   onFinal?: (file: FileList) => void,
   files: FileList,
   timeout?: number,
-  onTimeOut?: () => void
-  onAbort?: () => void
+  onTimeOut?: (files: FileList) => void
+  onAbort?: (files: FileList) => void
   responseType?: XMLHttpRequestResponseType
 }
 
@@ -41,9 +48,8 @@ class UploadHttp {
     xhr.open('POST', action, true)
     xhr.setRequestHeader('Content-Type', 'multipart/form-data')
     const formData = new FormData()
-    const fileList = Array.from(files)
-    fileList.forEach(file => {
-      formData.append(file.name, file)
+    files.forEach(file => {
+      formData.append(file.name, file.row)
     })
     uploader.onloadstart = function (event: ProgressEvent) {
       console.log('上传开始')
@@ -55,15 +61,15 @@ class UploadHttp {
     uploader.onload = function (event: ProgressEvent) {
       if (xhr.status === 200) {
         console.log('上传成功')
-        onSuccess && onSuccess(xhr)
+        onSuccess && onSuccess(files)
       } else {
         console.log('上传失败')
-        onFail && onFail(xhr)
+        onFail && onFail(files)
       }
     };
     uploader.onerror = function (event) {
       console.log('上传失败')
-      onFail && onFail(xhr)
+      onFail && onFail(files)
     };
     uploader.onloadend = function (event) {
       console.log('上传操作结束')
@@ -71,11 +77,11 @@ class UploadHttp {
     };
     uploader.ontimeout = function (event) {
       console.log('上传超时')
-      onTimeOut && onTimeOut()
+      onTimeOut && onTimeOut(files)
     };
     uploader.onabort = function (event) {
       console.log(`取消上传`)
-      onAbort && onAbort()
+      onAbort && onAbort(files)
     }
     xhr.send(formData)
   }
@@ -84,8 +90,8 @@ class UploadHttp {
     this.xhr.abort()
   }
 
-  setRequestHeader(name:string,value:string) {
-    this.xhr.setRequestHeader(name,value)
+  setRequestHeader(name: string, value: string) {
+    this.xhr.setRequestHeader(name, value)
   }
 }
 
