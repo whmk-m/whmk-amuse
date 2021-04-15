@@ -1,20 +1,64 @@
 import React, {ChangeEvent, useRef, useImperativeHandle, useState, useEffect} from "react";
 import classNames from "classnames";
-import UploadHttp, {IUploadHttpProps, FileList, FileItem} from "../../utils/upload";
+import UploadHttp, {FileList, FileItem} from "../../utils/upload";
 import Button from "../Button";
-import { guid } from "../../utils";
-import {type} from "os";
+import {guid} from "../../utils";
 
-export interface IUploadProps extends Omit<IUploadHttpProps, 'files'> {
-  beforeUpload?: (files: FileList) => boolean,
-  onChange?: (files: FileList) => void,
-  beforeRemove?: (file: IFileItemProps) => boolean,
-  defaultFileList?:IFileItemProps[]
-  fileList?:IFileItemProps[]
+export interface IUploadProps {
+  /**
+   * 上传地址
+   */
+  action: string,
+  /**
+   * 设置上传超时限制，默认 10s
+   */
+  timeout?: number,
+  /**
+   * 监听超时回调
+   * @param files 本次上传的文件，是一个数组
+   */
+  onTimeOut?: (files: FileList<IFileItemProps>) => void
+  /**
+   * 监听取消上传回调
+   * @param files 本次上传的文件，是一个数组
+   */
+  onAbort?: (files: FileList<IFileItemProps>) => void
+  /**
+   * 上传前的处理，当返回true时，则继续上传，否则不会上传
+   * @param files 本次上传的文件，是一个数组
+   * @return boolean
+   */
+  beforeUpload?: (files: FileList<IFileItemProps>) => boolean | Promise<boolean>,
+  /**
+   * 文件选择时、或者文件上传状态更新时
+   * @param files 本次上传的文件，是一个数组
+   */
+  onChange?: (files: FileList<IFileItemProps>) => void,
+  /**
+   * 删除文件前的处理，当返回true时，则继续删除，否则不会删除
+   * @param files 本次上传的文件，是一个数组
+   * @return boolean  | Promise<boolean>
+   */
+  beforeRemove?: (file: IFileItemProps) => boolean | Promise<boolean>,
+  /**
+   * 默认已上传的文件列表
+   */
+  defaultFileList?: IFileItemProps[]
+  /**
+   * 上传的文件列表，受控属性，当配合onChange 函数使用时，用户可自己处理需要展示的文件列表数据
+   */
+  fileList?: IFileItemProps[]
+  /**
+   * 上传成功后，接口返回的数据类型，
+   *  "" | "arraybuffer" | "blob" | "document" | "json" | "text";
+   */
+  responseType?: XMLHttpRequestResponseType
 }
 
+// 文件上传的状态
 export type UploadStatus = 'ready' | 'uploading' | 'success' | 'error'
 
+// 每个文件对象包括的属性
 export interface IFileItemProps extends FileItem {
   uid?: string,
   status?: UploadStatus,
@@ -22,16 +66,16 @@ export interface IFileItemProps extends FileItem {
   name: string,
   percent?: number,
   response?: XMLHttpRequest | null
-  [key:string]:any
+
+  [key: string]: any
 }
 
+/**
+ * ## 上传组件
+ */
 const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   const {
     action,
-    onProgress,
-    onSuccess,
-    onFail,
-    onFinal,
     onAbort,
     timeout,
     onTimeOut,
@@ -40,12 +84,8 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     beforeRemove,
     onChange,
     defaultFileList,
-    fileList:controlFileList
+    fileList: controlFileList
   } = props
-
-  useImperativeHandle(ref, () => ({
-    abort: uploaderRef.current.abort
-  }))
 
   // 初始化fileList
   const initFileList = () => {
@@ -63,37 +103,46 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   }
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const uploaderRef = useRef<any | null>(null)
+  const uploaderRef = useRef<any | null>([])
   const [fileList, setFileList] = useState<Array<IFileItemProps>>(initFileList)
 
-  // 监听 controlFileList 改变时更新列表数据
-  useEffect(()=>{
-    if (Array.isArray(controlFileList) && controlFileList.length > 0) {
-      setFileList(controlFileList.map(item => ({
+  // 监听用户自己控制的列表 controlFileList 改变时，更新组件内列表数据
+  useEffect(() => {
+    if (Array.isArray(controlFileList)) {
+      let _files = controlFileList.map(item => ({
         ...item,
         uid: typeof item.uid !== 'undefined' ? item.uid : guid(),
         status: item.status || 'success',
-      })))
+      }))
+      setFileList(_files)
     }
-  },[controlFileList])
+  }, [controlFileList])
 
   const handleClick = () => {
     inputRef.current && inputRef.current.click()
   }
 
-  const updateFileList = (uid: string, updateAttrObj: Partial<IFileItemProps>) => {
-    setFileList(prevList => (
-      prevList.map(item => {
-        if (item.uid === uid) {
-          console.log({...item, ...updateAttrObj})
-          return {...item, ...updateAttrObj}
+  // 根据文件上传时的不同状态，更新列表展示
+  const updateFileList = (files: FileList<IFileItemProps>, updateAttrObj: Partial<IFileItemProps>, callback?: (...args: any[]) => any) => {
+    setFileList(prevList => {
+      const _files = prevList.slice()
+      files.forEach(item => {
+        const index = _files.findIndex(file => file.uid === item.uid)
+        if (index !== -1) {
+          _files[index] = {
+            ..._files[index],
+            ...updateAttrObj
+          }
         }
-        console.log(item)
-        return item
       })
-    ))
+      callback && callback(_files)
+      // 没有onChange函数，则组件自身去更新数据，否则交给用户自己去更新列表
+      onChange && onChange(_files)
+      return _files
+    })
   }
 
+  // 当选择文件时触发
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
@@ -108,66 +157,66 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     }))
     if (!beforeUpload || await beforeUpload(_files)) {
       // 没有onChange函数，则组件自身去更新数据，否则交给用户自己去更新列表
-      if (!onChange) {
-        setFileList(_files.concat(fileList))
-      } else {
-        onChange(_files.concat(fileList))
-      }
+      onChange ? onChange(_files.concat(fileList)) : setFileList(_files.concat(fileList))
       _files.forEach(item => {
         uploadFiles([item])
       })
     }
   }
 
-  const handleOnProgress = (loaded: number, total: number, files: FileList) => {
-    files.forEach(item => {
-      updateFileList(item.uid, {
-        status: 'uploading',
-        percent: loaded / total,
-        response: uploaderRef.current.xhr
-      })
+  // 监听上传进度
+  const handleOnProgress = (loaded: number, total: number, files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
+    updateFileList(files, {
+      status: 'uploading',
+      percent: loaded / total,
+      response: res
     })
   }
 
-  const handleOnSuccess = (files: FileList) => {
-    files.forEach(item => {
-      updateFileList(item.uid, {
-        status: 'success',
-        response: uploaderRef.current.xhr
-      })
+  // 上传成功
+  const handleOnSuccess = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
+    updateFileList(files, {
+      status: 'success',
+      percent: 100,
+      response: res
     })
   }
 
-  const handleOnFail = (files: FileList) => {
-    files.forEach(item => {
-      updateFileList(item.uid, {
-        status: 'error',
-        response: uploaderRef.current.xhr
-      })
+  // 上传失败
+  const handleOnFail = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
+    updateFileList(files, {
+      status: 'error',
+      response: res
     })
   }
 
-  const handleOnAbort = (files: FileList) => {
-
+  // 取消上传
+  const handleOnAbort = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
+    updateFileList(files, {
+      status: 'error',
+      response: res
+    }, onAbort)
   }
 
-  const handleOnTimeOut = (files: FileList) => {
-
+  // 上传超时
+  const handleOnTimeOut = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
+    updateFileList(files, {
+      status: 'error',
+      response: res
+    }, onTimeOut)
   }
 
-  const handleOnFinal = (file: FileList) => {
-
-  }
-
+  // 删除上传的文件
   const handleRemove = async (file: IFileItemProps) => {
     if (!beforeRemove || await beforeRemove(file)) {
-      setFileList(fileList.filter(item => item.uid !== file.uid))
+      const _files = fileList.filter(item => item.uid !== file.uid);
+      onChange ? onChange(_files) : setFileList(_files)
     }
   }
 
-
-  const uploadFiles = (files: FileList) => {
-    const uploader = new UploadHttp({
+  // 上传文件
+  const uploadFiles = (files: FileList<IFileItemProps>) => {
+    const uploader = new UploadHttp<IFileItemProps>({
       action,
       files,
       onProgress: handleOnProgress,
@@ -175,11 +224,10 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
       onFail: handleOnFail,
       onAbort: handleOnAbort,
       onTimeOut: handleOnTimeOut,
-      onFinal: handleOnFinal,
       responseType,
       timeout,
     })
-    uploaderRef.current = uploader
+    uploaderRef.current.push(uploader)
     console.log('uploader:', uploader);
   }
 
@@ -205,7 +253,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
             <li key={item.uid && item.uid + index} className='whmk-upload-list-item'>
               <span className='whmk-upload-file-name'>{item.name + '-'}</span>
               <span className='whmk-upload-status'>{item.status}</span>
-              <div className='whmk-upload-progress'>{(item.percent ? (item.percent * 100): 0).toFixed(1) + '%'}</div>
+              <div className='whmk-upload-progress'>{(item.percent ? (item.percent * 100) : 0).toFixed(1) + '%'}</div>
               <span onClick={() => handleRemove(item)}>删除</span>
             </li>
           ))
