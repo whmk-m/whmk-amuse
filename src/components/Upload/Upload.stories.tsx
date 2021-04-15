@@ -15,6 +15,29 @@ export const DefaultUpload = Template.bind({})
 
 DefaultUpload.args = {
   action: 'https://www.mocky.io/v2/5185415ba171ea3a00704eed',
+  onChange:undefined,
+  fileList: [
+    {
+      uid: "-1",
+      name: "fiol1e.png",
+      status: "success",
+    }
+  ],
+  defaultFileList:[
+    {
+      uid: "1",
+      name: "xxx.png",
+      status: "success",
+    },
+    {
+      uid: "2",
+      name: "yyy.png",
+    },
+    {
+      uid: "3",
+      name: "zzz.png",
+    }
+  ],
   beforeUpload: (files: FileList) => {
     console.log('beforeUpload:', files)
     // 大于 60M 的 不能上传
@@ -26,7 +49,7 @@ DefaultUpload.args = {
   },
   beforeRemove:(file:IFileItemProps) => {
     // 大于 10M 的 不能删除
-    if (file.size / 1024 / 1024 > 10) {
+    if (file.size && file.size / 1024 / 1024 > 10) {
       alert('beforeRemove: 大于10M的不能删除')
       return false
     }

@@ -1,23 +1,28 @@
-import React, {ChangeEvent, useRef, useImperativeHandle, useState} from "react";
+import React, {ChangeEvent, useRef, useImperativeHandle, useState, useEffect} from "react";
 import classNames from "classnames";
 import UploadHttp, {IUploadHttpProps, FileList, FileItem} from "../../utils/upload";
 import Button from "../Button";
+import { guid } from "../../utils";
+import {type} from "os";
 
 export interface IUploadProps extends Omit<IUploadHttpProps, 'files'> {
   beforeUpload?: (files: FileList) => boolean,
   onChange?: (files: FileList) => void,
-  beforeRemove?: (file: IFileItemProps) => boolean
+  beforeRemove?: (file: IFileItemProps) => boolean,
+  defaultFileList?:IFileItemProps[]
+  fileList?:IFileItemProps[]
 }
 
 export type UploadStatus = 'ready' | 'uploading' | 'success' | 'error'
 
 export interface IFileItemProps extends FileItem {
-  uid: string,
-  status: UploadStatus,
-  size: number,
+  uid?: string,
+  status?: UploadStatus,
+  size?: number,
   name: string,
-  percent: number,
-  response: XMLHttpRequest | null
+  percent?: number,
+  response?: XMLHttpRequest | null
+  [key:string]:any
 }
 
 const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
@@ -34,16 +39,43 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     beforeUpload,
     beforeRemove,
     onChange,
+    defaultFileList,
+    fileList:controlFileList
   } = props
-
 
   useImperativeHandle(ref, () => ({
     abort: uploaderRef.current.abort
   }))
 
+  // 初始化fileList
+  const initFileList = () => {
+    let _files: IFileItemProps[] = []
+    if (Array.isArray(controlFileList) && controlFileList.length > 0) {
+      _files = controlFileList
+    } else if (Array.isArray(defaultFileList) && defaultFileList.length > 0) {
+      _files = defaultFileList
+    }
+    return _files.map((item, index) => ({
+      ...item,
+      uid: typeof item.uid !== 'undefined' ? item.uid : guid(),
+      status: item.status || 'success',
+    }))
+  }
+
   const inputRef = useRef<HTMLInputElement>(null)
   const uploaderRef = useRef<any | null>(null)
-  const [fileList, setFileList] = useState<Array<IFileItemProps>>([])
+  const [fileList, setFileList] = useState<Array<IFileItemProps>>(initFileList)
+
+  // 监听 controlFileList 改变时更新列表数据
+  useEffect(()=>{
+    if (Array.isArray(controlFileList) && controlFileList.length > 0) {
+      setFileList(controlFileList.map(item => ({
+        ...item,
+        uid: typeof item.uid !== 'undefined' ? item.uid : guid(),
+        status: item.status || 'success',
+      })))
+    }
+  },[controlFileList])
 
   const handleClick = () => {
     inputRef.current && inputRef.current.click()
@@ -62,12 +94,11 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     ))
   }
 
-
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
     const _files: IFileItemProps[] = Array.from(files).map((item, index) => ({
-      uid: Date.now() + index + '-file-item',
+      uid: guid(),
       status: 'ready',
       size: item.size,
       name: item.name,
@@ -75,9 +106,13 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
       row: item,
       response: null
     }))
-    onChange && onChange(_files)
     if (!beforeUpload || await beforeUpload(_files)) {
-      setFileList(_files.concat(fileList))
+      // 没有onChange函数，则组件自身去更新数据，否则交给用户自己去更新列表
+      if (!onChange) {
+        setFileList(_files.concat(fileList))
+      } else {
+        onChange(_files.concat(fileList))
+      }
       _files.forEach(item => {
         uploadFiles([item])
       })
@@ -167,10 +202,10 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
       <ul className="whmk-upload-list">
         {
           fileList.length > 0 && fileList.map((item, index) => (
-            <li key={item.uid + index} className='whmk-upload-item'>
+            <li key={item.uid && item.uid + index} className='whmk-upload-list-item'>
               <span className='whmk-upload-file-name'>{item.name + '-'}</span>
               <span className='whmk-upload-status'>{item.status}</span>
-              <div className='whmk-upload-progress'>{(item.percent * 100).toFixed(1) + '%'}</div>
+              <div className='whmk-upload-progress'>{(item.percent ? (item.percent * 100): 0).toFixed(1) + '%'}</div>
               <span onClick={() => handleRemove(item)}>删除</span>
             </li>
           ))

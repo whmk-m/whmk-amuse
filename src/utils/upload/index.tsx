@@ -1,5 +1,5 @@
 export interface FileItem {
-  row: File,
+  row?: File,
   [key:string]:any
 }
 
@@ -49,7 +49,7 @@ class UploadHttp {
     xhr.setRequestHeader('Content-Type', 'multipart/form-data')
     const formData = new FormData()
     files.forEach(file => {
-      formData.append(file.name, file.row)
+      file.row && formData.append(file.name, file.row)
     })
     uploader.onloadstart = function (event: ProgressEvent) {
       console.log('上传开始')
