@@ -30,3 +30,17 @@
 @include zoom-animation('left', scaleX(0), scaleX(1), center left);
 @include zoom-animation('right', scaleX(0), scaleX(1), center right);
 @include zoom-animation('bottom', scaleY(0), scaleY(1),  center bottom);
+
+
+.infinite-rotation {
+  animation: rotation 600ms linear infinite forwards;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -2,3 +2,74 @@
 * @author asus
 * @date 2021/4/12 21:44
 */
+.whmk-upload-wrapper {
+
+}
+.whmk-upload-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex:none;
+  flex-direction: column;
+}
+.whmk-upload-list-item {
+  line-height: 22px;
+  padding: 0 8px;
+  margin-top: 8px;
+  margin-bottom: 0;
+  display: flex;
+  transition: all linear 200ms;
+  flex-wrap: wrap;
+  &-success {
+    .whmk-upload-file-name {
+      color: $success;
+    }
+  };
+  &-error {
+    .whmk-upload-file-name {
+      color: $danger;
+    }
+  };
+  &:hover {
+    background-color: $gray-200;
+    > .whmk-upload-icon {
+      display: none;
+    }
+    > .whmk-upload-delete-icon {
+      display: flex;
+    }
+  }
+}
+.whmk-upload-file-name {
+  flex:1;
+}
+.whmk-upload-icon,.whmk-upload-delete-icon {
+  width: 40px;
+  height: 20px;
+  flex:none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.whmk-upload-delete-icon {
+  display: none;
+  cursor: pointer;
+}
+.whmk-upload-progress {
+  display: flex;
+  height: 2px;
+  font-size: 12px;
+  flex:none;
+  width: 100%;
+  background-color: $gray-300;
+  margin-top: 4px;
+}
+.whmk-upload-progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex:none;
+  transition: width 200ms linear;
+  background-color: $success;
+}

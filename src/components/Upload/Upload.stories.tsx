@@ -59,6 +59,10 @@ export const ControlFileList = () => {
     uid: "-1",
     name: "fiol1e.png",
     status: "success",
+  },{
+    name: "hello.png",
+  },{
+    name: "world.png",
   }])
 
   const handleChange = (files: FileList<IFileItemProps>) => {
@@ -69,11 +73,13 @@ export const ControlFileList = () => {
   }
 
   return (
-    <Upload
-      fileList={fileList}
-      action={'https://www.mocky.io/v2/5185415ba171ea3a00704eed'}
-      onChange={handleChange}
-    />
+   <div style={{width:'300px'}}>
+     <Upload
+       fileList={fileList}
+       action={'https://www.mocky.io/v2/5185415ba171ea3a00704eed'}
+       onChange={handleChange}
+     />
+   </div>
   )
 }
 ControlFileList.storyName = '受控的fileList'

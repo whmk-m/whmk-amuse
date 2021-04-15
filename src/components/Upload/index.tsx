@@ -3,6 +3,8 @@ import classNames from "classnames";
 import UploadHttp, {FileList, FileItem} from "../../utils/upload";
 import Button from "../Button";
 import {guid} from "../../utils";
+import Icon from "../Icon";
+import {faCoffee} from "@fortawesome/free-solid-svg-icons";
 
 export interface IUploadProps {
   /**
@@ -231,6 +233,18 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     console.log('uploader:', uploader);
   }
 
+  const renderIconStatus = (status: UploadStatus) => {
+    switch (status) {
+      case 'ready':
+        return <Icon theme={'secondary'} icon={'spinner'} size={'sm'}/>
+      case 'uploading':
+        return <Icon theme={'secondary'} icon={'spinner'} size={'sm'}/>;
+      case 'success':
+        return <Icon theme={'success'} icon={'check'} size={'sm'} />
+      case 'error':
+        return <Icon theme={'danger'} icon={'exclamation-circle'} size={'sm'}/>
+    }
+  }
 
   return (
     <div className='whmk-upload-wrapper'>
@@ -250,11 +264,29 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
       <ul className="whmk-upload-list">
         {
           fileList.length > 0 && fileList.map((item, index) => (
-            <li key={item.uid && item.uid + index} className='whmk-upload-list-item'>
-              <span className='whmk-upload-file-name'>{item.name + '-'}</span>
-              <span className='whmk-upload-status'>{item.status}</span>
-              <div className='whmk-upload-progress'>{(item.percent ? (item.percent * 100) : 0).toFixed(1) + '%'}</div>
-              <span onClick={() => handleRemove(item)}>删除</span>
+            <li
+              key={item.uid && item.uid + index}
+              className={`whmk-upload-list-item whmk-upload-list-item-${item.status}`}
+            >
+              <span className='whmk-upload-file-name'>{item.name}</span>
+              <span
+                className={`whmk-upload-icon ${item.status === 'uploading' || item.status === 'ready' ? 'infinite-rotation' : ''}`}>
+                {item.status && renderIconStatus(item.status)}
+              </span>
+              <span className='whmk-upload-delete-icon' onClick={() => handleRemove(item)}>
+                <Icon theme={"danger"} icon={'trash'} size={'sm'} title={'删除'}/>
+              </span>
+              {
+                (item.status === 'ready' || item.status === 'uploading') && (
+                  <div className='whmk-upload-progress'>
+                    <div
+                      className='whmk-upload-progress-bar'
+                      style={{width: `${(item.percent ? (item.percent * 100) : 0).toFixed(1) + '%'}`}}>
+
+                    </div>
+                  </div>
+                )
+              }
             </li>
           ))
         }
