@@ -9,7 +9,7 @@ export interface IUploadProps {
   /**
    * 上传地址
    */
-  action: string,
+  action?: string,
   /**
    * 设置上传超时限制，默认 10s
    */
@@ -25,7 +25,7 @@ export interface IUploadProps {
    */
   onAbort?: (files: FileList<IFileItemProps>) => void
   /**
-   * 上传前的处理，当返回true时，则继续上传，否则不会上传
+   * 上传前的处理，当返回true时，则继续上传，否则不会上传，并且不会展示到上传的列表中
    * @param files 本次上传的文件，是一个数组
    * @return boolean
    */
@@ -57,34 +57,38 @@ export interface IUploadProps {
   /**
    * 接受上传的文件类型, 详见 input accept Attribute
    */
-  accept?:string,
+  accept?: string,
   /**
    * 上传所需额外参数
    */
-  data?:{[key:string]:any},
+  data?: { [key: string]: any },
   /**
    * 设置上传的请求头部，IE10 以上有效
    */
-  headers?:{[key:string]:any},
+  headers?: { [key: string]: any },
   /**
    * 是否支持多选文件，ie10+ 支持。开启后按住 ctrl 可选择多个文件
    */
-  multiple?:boolean,
+  multiple?: boolean,
   /**
    * 发到后台的文件参数名
    */
-  name?:string,
+  name?: string,
   /**
    * 上传请求时是否携带 cookie
    */
-  withCredentials?:boolean
+  withCredentials?: boolean,
+
+  /**
+   * 是否手动上传，true 表示有用户手动上传，false 表示自动上传
+   */
+  manualUpload?: boolean
   /**
    *  TODO:
-   *  1.增加自定义触发上传的元素
-   *  2.点击上传文件名称，增加 onPreview 事件进行预览或用户自定义的操作
+   *  1.点击上传文件名称，增加 onPreview 事件进行预览或用户自定义的操作
    *
-   *  3.支持拖动上传
-   *  4.可以拖动排序上传的文件列表
+   *  2.支持拖动上传
+   *  3.可以拖动排序上传的文件列表
    */
 }
 
@@ -123,7 +127,8 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     withCredentials,
     headers,
     multiple,
-    name
+    name,
+    manualUpload
   } = props
 
   // 初始化fileList
@@ -162,7 +167,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   }
 
   // 根据文件上传时的不同状态，更新列表展示
-  const updateFileList = (files: FileList<IFileItemProps>, updateAttrObj: Partial<IFileItemProps>, callback?: (...args: any[]) => any) => {
+  const updateFileStatus = (files: FileList<IFileItemProps>, updateAttrObj: Partial<IFileItemProps>, callback?: (...args: any[]) => any) => {
     setFileList(prevList => {
       const _files = prevList.slice()
       files.forEach(item => {
@@ -175,10 +180,33 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
         }
       })
       callback && callback(_files)
-      // 没有onChange函数，则组件自身去更新数据，否则交给用户自己去更新列表
-      onChange && onChange(_files)
+      updateFileList(_files,false)
       return _files
     })
+  }
+
+  /**
+   * 根据是否提供了受控属性 fileList => controlFileList 以及 onChange 回调决定由谁去更新文件上传的类别数据
+   * @param files
+   * @param immediately 是否立刻更新
+   */
+  const updateFileList = (files: FileList<IFileItemProps>,immediately:boolean = true) => {
+    // 没提供onChange函数，则组件自身去更新列表数据
+    if (!onChange) {
+      immediately && setFileList(files)
+      return files
+    }
+    if (!controlFileList && onChange) {
+      // 只提供了onChange函数，则调用该回调，并自身去更新列表数据
+      onChange(files)
+      immediately && setFileList(files)
+      return files
+    }
+    if (onChange && controlFileList) {
+      // 同时提供了fileList和onChange函数，则交给用户自己去更新列表，
+      onChange(files)
+      return files
+    }
   }
 
   // 当选择文件时触发
@@ -195,17 +223,16 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
       response: null
     }))
     if (!beforeUpload || await beforeUpload(_files)) {
-      // 没有onChange函数，则组件自身去更新数据，否则交给用户自己去更新列表
-      onChange ? onChange(_files.concat(fileList)) : setFileList(_files.concat(fileList))
-      _files.forEach(item => {
-        uploadFiles([item])
-      })
+      // 更新列表数据
+      updateFileList(_files.concat(fileList))
+      // 自动上传
+      !manualUpload && uploadFiles(_files)
     }
   }
 
   // 监听上传进度
   const handleOnProgress = (loaded: number, total: number, files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
-    updateFileList(files, {
+    updateFileStatus(files, {
       status: 'uploading',
       percent: loaded / total,
       response: res
@@ -214,7 +241,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
 
   // 上传成功
   const handleOnSuccess = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
-    updateFileList(files, {
+    updateFileStatus(files, {
       status: 'success',
       percent: 100,
       response: res
@@ -223,7 +250,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
 
   // 上传失败
   const handleOnFail = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
-    updateFileList(files, {
+    updateFileStatus(files, {
       status: 'error',
       response: res
     })
@@ -231,7 +258,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
 
   // 取消上传
   const handleOnAbort = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
-    updateFileList(files, {
+    updateFileStatus(files, {
       status: 'error',
       response: res
     }, onAbort)
@@ -239,7 +266,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
 
   // 上传超时
   const handleOnTimeOut = (files: FileList<IFileItemProps>, res: XMLHttpRequest) => {
-    updateFileList(files, {
+    updateFileStatus(files, {
       status: 'error',
       response: res
     }, onTimeOut)
@@ -249,39 +276,42 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   const handleRemove = async (file: IFileItemProps) => {
     if (!beforeRemove || await beforeRemove(file)) {
       const _files = fileList.filter(item => item.uid !== file.uid);
-      onChange ? onChange(_files) : setFileList(_files)
+      updateFileList(_files)
     }
   }
 
   // 上传文件
   const uploadFiles = (files: FileList<IFileItemProps>) => {
-    const uploader = new UploadHttp<IFileItemProps>({
-      action,
-      files,
-      responseType,
-      timeout,
-      data,
-      withCredentials,
-      headers,
-      name,
-      onProgress: handleOnProgress,
-      onSuccess: handleOnSuccess,
-      onFail: handleOnFail,
-      onAbort: handleOnAbort,
-      onTimeOut: handleOnTimeOut,
+    if (!action) return
+    files.forEach(item => {
+      const uploader = new UploadHttp<IFileItemProps>({
+        action,
+        files,
+        responseType,
+        timeout,
+        data,
+        withCredentials,
+        headers,
+        name,
+        onProgress: handleOnProgress,
+        onSuccess: handleOnSuccess,
+        onFail: handleOnFail,
+        onAbort: handleOnAbort,
+        onTimeOut: handleOnTimeOut,
+      })
+      uploaderRef.current.push(uploader)
+      console.log('uploader:', uploader);
     })
-    uploaderRef.current.push(uploader)
-    console.log('uploader:', uploader);
   }
 
   const renderIconStatus = (status: UploadStatus) => {
     switch (status) {
       case 'ready':
-        return <Icon theme={'secondary'} icon={'spinner'} size={'sm'}/>
+        return null
       case 'uploading':
         return <Icon theme={'secondary'} icon={'spinner'} size={'sm'}/>;
       case 'success':
-        return <Icon theme={'success'} icon={'check-circle'} size={'sm'} />
+        return <Icon theme={'success'} icon={'check-circle'} size={'sm'}/>
       case 'error':
         return <Icon theme={'danger'} icon={'exclamation-circle'} size={'sm'}/>
     }
@@ -312,14 +342,14 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
             >
               <span className='whmk-upload-file-name'>{item.name}</span>
               <span
-                className={`whmk-upload-icon ${item.status === 'uploading' || item.status === 'ready' ? 'infinite-rotation' : ''}`}>
+                className={`whmk-upload-icon ${!manualUpload && (item.status === 'uploading' || item.status === 'ready') ? 'infinite-rotation' : ''}`}>
                 {item.status && renderIconStatus(item.status)}
               </span>
               <span className='whmk-upload-delete-icon' onClick={() => handleRemove(item)}>
                 <Icon theme={"danger"} icon={'times-circle'} size={'sm'} title={'删除'}/>
               </span>
               {
-                (item.status === 'ready' || item.status === 'uploading') && (
+                !manualUpload  && (item.status === 'ready' || item.status === 'uploading') && (
                   <div className='whmk-upload-progress'>
                     <div
                       className='whmk-upload-progress-bar'
@@ -338,12 +368,13 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
 })
 
 Upload.defaultProps = {
-  name:'file',
-  timeout:5000,
-  responseType:'json',
-  withCredentials:false,
-  multiple:false,
-  accept:'*'
+  name: 'file',
+  timeout: 5000,
+  responseType: 'json',
+  withCredentials: false,
+  multiple: false,
+  accept: '*',
+  manualUpload: false
 }
 
 export default Upload
