@@ -1,9 +1,5 @@
 export interface FileItem {
   row?: File,
-  name?:string,
-  headers?:object,
-  withCredentials?:boolean
-  data?:object,
   [key:string]:any
 }
 
@@ -20,6 +16,10 @@ export interface IUploadHttpProps<T> {
   onTimeOut?: (files: FileList<T>,res:XMLHttpRequest) => void
   onAbort?: (files: FileList<T>,res:XMLHttpRequest) => void
   responseType?: XMLHttpRequestResponseType
+  name?:string,
+  headers?:{[key:string]:any},
+  withCredentials?:boolean
+  data?:{[key:string]:any},
 }
 
 class UploadHttp<T = FileItem> {
@@ -44,50 +44,56 @@ class UploadHttp<T = FileItem> {
       onAbort,
       timeout = 10000,
       onTimeOut,
-      responseType = 'json'
+      responseType = 'json',
+      withCredentials = false,
+      name = 'file',
+      headers = {},
+      data = {},
     } = this.config
     const xhr = this.xhr, uploader = xhr.upload
     xhr.timeout = timeout;
     xhr.responseType = responseType
+    xhr.withCredentials = withCredentials
     xhr.open('POST', action, true)
     xhr.setRequestHeader('Content-Type', 'multipart/form-data')
+    Object.keys(headers).forEach((key) =>{
+      xhr.setRequestHeader(key,headers[key])
+    })
     const formData = new FormData()
     files.forEach(file => {
       // @ts-ignore
-      file.row && formData.append(file.name, file.row)
+      file.row && formData.append(name, file.row)
+    })
+    Object.keys(data).forEach(key=>{
+      formData.append(key,data[key])
     })
     uploader.onloadstart = function (event: ProgressEvent) {
       console.log('上传开始')
+    };
+    xhr.onload = function () {
+      console.log('上传成功')
+      onSuccess && onSuccess(files, xhr)
+    }
+    xhr.onerror = function () {
+      console.log('上传失败')
+      onFail && onFail(files,xhr)
+    }
+    xhr.ontimeout = function (event) {
+      console.log('上传超时')
+      onTimeOut && onTimeOut(files,xhr)
     };
     uploader.onprogress = function (event: ProgressEvent) {
       console.log('上传中...')
       onProgress && onProgress(event.loaded, event.total, files,xhr)
     };
-    uploader.onload = function (event: ProgressEvent) {
-      if (xhr.status === 200) {
-        console.log('上传成功')
-        onSuccess && onSuccess(files,xhr)
-      } else {
-        console.log('上传失败')
-        onFail && onFail(files,xhr)
-      }
-    };
-    uploader.onerror = function (event) {
-      console.log('上传失败')
-      onFail && onFail(files,xhr)
-    };
-    uploader.onloadend = function (event) {
-      console.log('上传操作结束')
-      onFinal && onFinal(files,xhr)
-    };
-    uploader.ontimeout = function (event) {
-      console.log('上传超时')
-      onTimeOut && onTimeOut(files,xhr)
-    };
     uploader.onabort = function (event) {
       console.log(`取消上传`)
       onAbort && onAbort(files,xhr)
     }
+    xhr.onloadend = function (event) {
+      console.log('上传操作结束')
+      onFinal && onFinal(files,xhr)
+    };
     xhr.send(formData)
   }
 

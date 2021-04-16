@@ -11,15 +11,27 @@ export default {
 
 const Template: Story<IUploadProps> = (props) => <Upload {...props}/>
 
+export const DefaultUpload = Template.bind({})
 
-export const DefaultUpload = () => {
+DefaultUpload.args = {
+  onChange:undefined,
+  beforeRemove:undefined,
+  beforeUpload:undefined,
+  onAbort:undefined,
+  onTimeOut:undefined,
+  action:'https://www.mocky.io/v2/5185415ba171ea3a00704eed'
+}
+
+DefaultUpload.storyName = '最基础的上传组件 可配置基础属性'
+
+export const DefaultUpload2 = () => {
   return (
     <Upload
       action={'https://www.mocky.io/v2/5185415ba171ea3a00704eed'}
     />
   )
 }
-DefaultUpload.storyName = '最基础的上传组件'
+DefaultUpload2.storyName = '最基础的上传组件2 不能配置基础属性'
 
 export const BeforeDealUpload = () => {
 
