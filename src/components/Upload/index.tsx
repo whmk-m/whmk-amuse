@@ -82,13 +82,17 @@ export interface IUploadProps {
   /**
    * 是否手动上传，true 表示有用户手动上传，false 表示自动上传
    */
-  manualUpload?: boolean
+  manualUpload?: boolean,
+
+  /**
+   * 点击文件，进行预览或其他自定义的操作
+   * @param file 当前点击的文件
+   */
+  onPreview?: (file: IFileItemProps) => void
   /**
    *  TODO:
-   *  1.点击上传文件名称，增加 onPreview 事件进行预览或用户自定义的操作
-   *
-   *  2.支持拖动上传
-   *  3.可以拖动排序上传的文件列表
+   *  1.支持拖动上传
+   *  2.可以拖动排序上传的文件列表
    */
 }
 
@@ -128,7 +132,8 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     headers,
     multiple,
     name,
-    manualUpload
+    manualUpload,
+    onPreview
   } = props
 
   // 初始化fileList
@@ -180,7 +185,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
         }
       })
       callback && callback(_files)
-      updateFileList(_files,false)
+      updateFileList(_files, false)
       return _files
     })
   }
@@ -190,7 +195,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
    * @param files
    * @param immediately 是否立刻更新
    */
-  const updateFileList = (files: FileList<IFileItemProps>,immediately:boolean = true) => {
+  const updateFileList = (files: FileList<IFileItemProps>, immediately: boolean = true) => {
     // 没提供onChange函数，则组件自身去更新列表数据
     if (!onChange) {
       immediately && setFileList(files)
@@ -273,7 +278,8 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   }
 
   // 删除上传的文件
-  const handleRemove = async (file: IFileItemProps) => {
+  const handleRemove = async (event: React.MouseEvent, file: IFileItemProps) => {
+    event.stopPropagation()
     if (!beforeRemove || await beforeRemove(file)) {
       const _files = fileList.filter(item => item.uid !== file.uid);
       updateFileList(_files)
@@ -317,6 +323,11 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     }
   }
 
+  const handlePreview = (file: IFileItemProps) => {
+    onPreview && onPreview(file)
+  }
+
+  // @ts-ignore
   return (
     <div className='whmk-upload-wrapper'>
       <Button
@@ -339,17 +350,20 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
             <li
               key={item.uid && item.uid + index}
               className={`whmk-upload-list-item whmk-upload-list-item-${item.status}`}
+              style={{cursor: onPreview ? 'pointer' : ''}}
+              onClick={() => handlePreview(item)}
             >
               <span className='whmk-upload-file-name'>{item.name}</span>
               <span
                 className={`whmk-upload-icon ${!manualUpload && (item.status === 'uploading' || item.status === 'ready') ? 'infinite-rotation' : ''}`}>
                 {item.status && renderIconStatus(item.status)}
               </span>
-              <span className='whmk-upload-delete-icon' onClick={() => handleRemove(item)}>
+              <span className='whmk-upload-delete-icon'
+                    onClick={(event: React.MouseEvent) => handleRemove(event, item)}>
                 <Icon theme={"danger"} icon={'times-circle'} size={'sm'} title={'删除'}/>
               </span>
               {
-                !manualUpload  && (item.status === 'ready' || item.status === 'uploading') && (
+                !manualUpload && (item.status === 'ready' || item.status === 'uploading') && (
                   <div className='whmk-upload-progress'>
                     <div
                       className='whmk-upload-progress-bar'

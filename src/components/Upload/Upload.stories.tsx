@@ -3,6 +3,7 @@ import {Story, Meta} from '@storybook/react/types-6-0';
 import Upload, {IUploadProps, IFileItemProps} from "./index";
 import {FileList} from "../../utils/upload";
 import Button from "../Button";
+import Alert from "../Alert";
 
 export default {
   title: "whmk-amuse/Upload",
@@ -179,3 +180,21 @@ export const ManualUpload = () => {
   )
 }
 ManualUpload.storyName = '手动上传'
+
+
+
+export const PreviewFileUpload = () => {
+
+  const handlePreview = (file:IFileItemProps) => {
+    alert('预览：' + file.name)
+  }
+
+  return (
+    <Upload
+      action='https://www.mocky.io/v2/5185415ba171ea3a00704eed'
+      onPreview={handlePreview}
+    />
+  )
+}
+
+PreviewFileUpload.storyName = '点击文件预览'
