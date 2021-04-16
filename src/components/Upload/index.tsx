@@ -1,10 +1,9 @@
-import React, {ChangeEvent, useRef, useImperativeHandle, useState, useEffect} from "react";
+import React, {ChangeEvent, useRef, useState, useEffect} from "react";
 import classNames from "classnames";
 import UploadHttp, {FileList, FileItem} from "../../utils/upload";
 import Button from "../Button";
 import {guid} from "../../utils";
 import Icon from "../Icon";
-import {faCoffee} from "@fortawesome/free-solid-svg-icons";
 
 export interface IUploadProps {
   /**
@@ -45,16 +44,53 @@ export interface IUploadProps {
   /**
    * 默认已上传的文件列表
    */
-  defaultFileList?: IFileItemProps[]
+  defaultFileList?: IFileItemProps[],
   /**
    * 上传的文件列表，受控属性，当配合onChange 函数使用时，用户可自己处理需要展示的文件列表数据
    */
-  fileList?: IFileItemProps[]
+  fileList?: IFileItemProps[],
   /**
    * 上传成功后，接口返回的数据类型，
    *  "" | "arraybuffer" | "blob" | "document" | "json" | "text";
    */
-  responseType?: XMLHttpRequestResponseType
+  responseType?: XMLHttpRequestResponseType,
+  /**
+   * 接受上传的文件类型, 详见 input accept Attribute
+   */
+  accept?:string,
+  /**
+   * 上传所需额外参数
+   */
+  data?:object,
+  /**
+   * 设置上传的请求头部，IE10 以上有效
+   */
+  headers?:object,
+  /**
+   * 是否支持多选文件，ie10+ 支持。开启后按住 ctrl 可选择多个文件
+   */
+  multiple?:boolean,
+  /**
+   * 发到后台的文件参数名
+   */
+  name?:string,
+  /**
+   * 上传请求时是否携带 cookie
+   */
+  withCredentials?:boolean
+  /**
+   *  TODO:
+   *  1.增加自定义header的能力
+   *  2.添加 name 属性，代表发到后台的文件参数名称
+   *  3.添加data属性，上传所需的额外参数
+   *  4.增加是否可携带cookie的配置
+   *  5.添加input标书的file约束属性 如：accept、multiple
+   *  6.增加自定义触发上传的元素
+   *  7.点击上传文件名称，增加 onPreview 事件进行预览或用户自定义的操作
+   *
+   *  8.支持拖动上传
+   *  9.可以拖动排序上传的文件列表
+   */
 }
 
 // 文件上传的状态
@@ -86,7 +122,13 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     beforeRemove,
     onChange,
     defaultFileList,
-    fileList: controlFileList
+    fileList: controlFileList,
+    accept,
+    data,
+    withCredentials,
+    headers,
+    multiple,
+    name
   } = props
 
   // 初始化fileList
@@ -240,7 +282,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
       case 'uploading':
         return <Icon theme={'secondary'} icon={'spinner'} size={'sm'}/>;
       case 'success':
-        return <Icon theme={'success'} icon={'check'} size={'sm'} />
+        return <Icon theme={'success'} icon={'check-circle'} size={'sm'} />
       case 'error':
         return <Icon theme={'danger'} icon={'exclamation-circle'} size={'sm'}/>
     }
@@ -259,7 +301,8 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
         style={{display: 'none'}}
         onChange={handleChange}
         ref={inputRef}
-        multiple={true}
+        multiple={multiple}
+        accept={accept}
       />
       <ul className="whmk-upload-list">
         {
@@ -274,7 +317,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
                 {item.status && renderIconStatus(item.status)}
               </span>
               <span className='whmk-upload-delete-icon' onClick={() => handleRemove(item)}>
-                <Icon theme={"danger"} icon={'trash'} size={'sm'} title={'删除'}/>
+                <Icon theme={"danger"} icon={'times-circle'} size={'sm'} title={'删除'}/>
               </span>
               {
                 (item.status === 'ready' || item.status === 'uploading') && (

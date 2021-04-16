@@ -1,5 +1,9 @@
 export interface FileItem {
   row?: File,
+  name?:string,
+  headers?:object,
+  withCredentials?:boolean
+  data?:object,
   [key:string]:any
 }
 
