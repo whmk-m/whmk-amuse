@@ -198,3 +198,29 @@ export const PreviewFileUpload = () => {
 }
 
 PreviewFileUpload.storyName = '点击文件预览'
+
+export const CustomUploadTrigger = () => {
+
+  return (
+    <Upload
+      action='https://www.mocky.io/v2/5185415ba171ea3a00704eed'
+    >
+      <Button>自定义的上传按钮</Button>
+    </Upload>
+  )
+}
+
+CustomUploadTrigger.storyName = '自定义的上传按钮'
+
+
+export const DragUpload = () => {
+
+  return (
+    <Upload
+      action='https://www.mocky.io/v2/5185415ba171ea3a00704eed'
+      drag={true}
+    />
+  )
+}
+
+DragUpload.storyName = '拖拽文件上传'

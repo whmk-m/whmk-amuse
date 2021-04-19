@@ -4,6 +4,7 @@ import UploadHttp, {FileList, FileItem} from "../../utils/upload";
 import Button from "../Button";
 import {guid} from "../../utils";
 import Icon from "../Icon";
+import Dragger from "./Dragger";
 
 export interface IUploadProps {
   /**
@@ -88,11 +89,20 @@ export interface IUploadProps {
    * 点击文件，进行预览或其他自定义的操作
    * @param file 当前点击的文件
    */
-  onPreview?: (file: IFileItemProps) => void
+  onPreview?: (file: IFileItemProps) => void,
+
+  /**
+   * 支持拖拽文件上传
+   */
+  drag?: boolean,
+
+  /**
+   * 可以自定义上传的元素节点
+   */
+  children?:React.ReactNode
   /**
    *  TODO:
-   *  1.支持拖动上传
-   *  2.可以拖动排序上传的文件列表
+   *  1.可以拖动排序上传的文件列表
    */
 }
 
@@ -133,7 +143,9 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     multiple,
     name,
     manualUpload,
-    onPreview
+    onPreview,
+    drag,
+    children
   } = props
 
   // 初始化fileList
@@ -215,8 +227,14 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   }
 
   // 当选择文件时触发
-  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (!files) return
+    initFileStatus(files)
+  }
+
+  // 初始化文件的状态以及需要的属性
+  const initFileStatus = async (files:FileList<any>) => {
     if (!files) return
     const _files: IFileItemProps[] = Array.from(files).map((item, index) => ({
       uid: guid(),
@@ -323,19 +341,43 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
     }
   }
 
+  // 点击文件预览
   const handlePreview = (file: IFileItemProps) => {
     onPreview && onPreview(file)
+  }
+
+  // 渲染触发上传的区域
+  const renderTriggerArea = () => {
+    return (
+      <div className='whmk-upload-trigger-area'>
+        {
+          drag ? (
+            <Dragger onFiles={initFileStatus}>
+              {children}
+            </Dragger>
+          ) : (
+            children ? (
+              <div onClick={handleClick}>
+                {children}
+              </div>
+            ) : (
+              <Button
+                onClick={handleClick}
+                btnType={"primary"}
+              >
+                上传文件
+              </Button>
+            )
+          )
+        }
+      </div>
+    )
   }
 
   // @ts-ignore
   return (
     <div className='whmk-upload-wrapper'>
-      <Button
-        onClick={handleClick}
-        btnType={"primary"}
-      >
-        上传文件
-      </Button>
+      {renderTriggerArea()}
       <input
         type="file"
         style={{display: 'none'}}
@@ -388,7 +430,8 @@ Upload.defaultProps = {
   withCredentials: false,
   multiple: false,
   accept: '*',
-  manualUpload: false
+  manualUpload: false,
+  drag: false
 }
 
 export default Upload
