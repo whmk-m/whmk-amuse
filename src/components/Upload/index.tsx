@@ -298,6 +298,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   // 删除上传的文件
   const handleRemove = async (event: React.MouseEvent, file: IFileItemProps) => {
     event.stopPropagation()
+    console.log('handleRemove:',file)
     if (!beforeRemove || await beforeRemove(file)) {
       const _files = fileList.filter(item => item.uid !== file.uid);
       updateFileList(_files)
@@ -324,14 +325,14 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
         onTimeOut: handleOnTimeOut,
       })
       uploaderRef.current.push(uploader)
-      console.log('uploader:', uploader);
+      // console.log('uploader:', uploader);
     })
   }
 
   const renderIconStatus = (status: UploadStatus) => {
     switch (status) {
       case 'ready':
-        return null
+        return <Icon theme={'secondary'} icon={'spinner'} size={'sm'}/>;
       case 'uploading':
         return <Icon theme={'secondary'} icon={'spinner'} size={'sm'}/>;
       case 'success':
