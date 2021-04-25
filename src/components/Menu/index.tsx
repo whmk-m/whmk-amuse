@@ -1,7 +1,7 @@
-import React, { useState} from 'react'
+import React, {FC, useState} from 'react'
 import classNames from "classnames";
-import { IMenuItemProps } from './MenuItem'
-
+import SubMenu, { ISubMenuProps } from "./SubMenu1";
+import MenuItem, { IMenuItemProps } from "./MenuItem";
 export type MenuMode = 'vertical' | 'horizontal'
 
 export interface IMenuProps {
@@ -77,4 +77,16 @@ const Menu: React.FC<IMenuProps> = (props) => {
   )
 }
 
-export default Menu
+
+// 到处Menu，并且可以通过Menu.Item 、Menu.SubMenu 使用
+export type IMenuComponent =  FC<IMenuProps> & {
+  Item:FC<IMenuItemProps>,
+  SubMenu:FC<ISubMenuProps>
+}
+
+const TransMenu = Menu as IMenuComponent
+
+TransMenu.Item = MenuItem
+TransMenu.SubMenu = SubMenu
+
+export default TransMenu
