@@ -32,7 +32,10 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "build-ts":"tsc -p tsconfig.build.json"
+    "build-all": "npm run clean && npm run build-ts & npm run build-css",
+    "build-ts": "tsc -p tsconfig.build.json",
+    "build-css": "node-sass ./src/styles/index.scss  ./build/index.css",
+    "clean": "rimraf ./build"
   },
   "eslintConfig": {
     "extends": [
