@@ -6,7 +6,8 @@
     "declaration": true,
     "jsx": "react",
     "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true
   },
   "include": [
     "src"
