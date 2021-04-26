@@ -78,7 +78,7 @@ const Menu: React.FC<IMenuProps> = (props) => {
 }
 
 
-// 到处Menu，并且可以通过Menu.Item 、Menu.SubMenu 使用
+// 导出Menu，并且可以通过Menu.Item 、Menu.SubMenu 使用
 export type IMenuComponent =  FC<IMenuProps> & {
   Item:FC<IMenuItemProps>,
   SubMenu:FC<ISubMenuProps>
