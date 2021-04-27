@@ -2,9 +2,26 @@
   "name": "whmk-amuse",
   "version": "0.1.0",
   "private": true,
-  "main": "build/index.js",
-  "module": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "description": "React Components library",
+  "license": "MIT",
+  "author": "whmk",
+  "keywords": [
+    "Component",
+    "Typescript",
+    "UI",
+    "React"
+  ],
+  "homepage": "https://gitee.com/w_mao/whmk-amuse",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/w_mao/whmk-amuse"
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
@@ -37,8 +54,9 @@
     "build-storybook": "build-storybook -s public",
     "build-all": "npm run clean && npm run build-ts & npm run build-css",
     "build-ts": "tsc -p tsconfig.build.json",
-    "build-css": "node-sass ./src/styles/index.scss  ./build/index.css",
-    "clean": "rimraf ./build"
+    "build-css": "node-sass ./src/styles/index.scss  ./dist/index.css",
+    "clean": "rimraf ./dist",
+    "prepublish": "npm run build-all"
   },
   "eslintConfig": {
     "extends": [
