@@ -1,7 +1,9 @@
 import React from "react";
 import {Story, Meta} from '@storybook/react/types-6-0';
 import Alert, { IBaseAlertProps } from "./index";
-
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+library.add(fas) // 一次性导入所有的图标，接下来就可以使用字符串了
 export default {
   title: "whmk-amuse/Alert",
   component: Alert,
@@ -40,7 +42,7 @@ Danger.storyName = 'Danger 警告提示'
 
 export const DangerDesc = Template.bind({})
 DangerDesc.args = {
-  title:'DangerDesc Text',
+  title:'DangerDesc Text1',
   type:"danger",
   description: 'DangerDesc Description DangerDesc Description DangerDesc Description DangerDesc Description'
 }

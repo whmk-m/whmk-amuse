@@ -3,7 +3,6 @@ import {Story, Meta} from '@storybook/react/types-6-0';
 import Upload, {IUploadProps, IFileItemProps} from "./index";
 import {FileList} from "../../utils/upload";
 import Button from "../Button";
-import Alert from "../Alert";
 
 export default {
   title: "whmk-amuse/Upload",

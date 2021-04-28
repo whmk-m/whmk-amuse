@@ -68,30 +68,30 @@ class UploadHttp<T = FileItem> {
       formData.append(key,data[key])
     })
     uploader.onloadstart = function (event: ProgressEvent) {
-      console.log('上传开始')
+      // console.log('上传开始')
     };
     xhr.onload = function () {
-      console.log('上传成功')
+      // console.log('上传成功')
       onSuccess && onSuccess(files, xhr)
     }
     xhr.onerror = function () {
-      console.log('上传失败')
+      // console.log('上传失败')
       onFail && onFail(files,xhr)
     }
     xhr.ontimeout = function (event) {
-      console.log('上传超时')
+      // console.log('上传超时')
       onTimeOut && onTimeOut(files,xhr)
     };
     uploader.onprogress = function (event: ProgressEvent) {
-      console.log('上传中...')
+      // console.log('上传中...')
       onProgress && onProgress(event.loaded, event.total, files,xhr)
     };
     uploader.onabort = function (event) {
-      console.log(`取消上传`)
+      // console.log(`取消上传`)
       onAbort && onAbort(files,xhr)
     }
     xhr.onloadend = function (event) {
-      console.log('上传操作结束')
+      // console.log('上传操作结束')
       onFinal && onFinal(files,xhr)
     };
     xhr.send(formData)

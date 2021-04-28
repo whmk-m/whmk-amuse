@@ -206,7 +206,7 @@ const AutoComplete: React.FC<IAutoCompleteProps> = (props) => {
 
   // 为autoComplete input 输入框添加键盘事件，分别为 上下方向键、enter确认键、esc取消键，各自执行不同的操作
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    console.log(e.code)
+    // console.log(e.code)
     switch (e.code) {
       case 'ArrowUp' :
         e.preventDefault()

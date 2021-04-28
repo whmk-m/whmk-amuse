@@ -1,4 +1,4 @@
-import React, {InputHTMLAttributes, ReactElement, useEffect, useRef, useState} from 'react'
+import React, {InputHTMLAttributes, ReactElement, useEffect,  useState} from 'react'
 import classNames from "classnames";
 import Icon from "../Icon";
 
@@ -88,8 +88,8 @@ const Input: React.FC<IInputProps> = (props) => {
 
   const inputClasses = classNames('whmk-input', {
     [`whmk-input-${size}`]: !!size,
-    ['whmk-input-disabled']: disabled,
-    ['whmk-input-have-clean']: allowClear,
+    'whmk-input-disabled': disabled,
+    'whmk-input-have-clean': allowClear,
   })
 
   const containerClasses = classNames('whmk-input-container', {

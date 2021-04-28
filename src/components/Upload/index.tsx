@@ -1,5 +1,4 @@
 import React, {ChangeEvent, useRef, useState, useEffect} from "react";
-import classNames from "classnames";
 import UploadHttp, {FileList, FileItem} from "../../utils/upload";
 import Button from "../Button";
 import {guid} from "../../utils";

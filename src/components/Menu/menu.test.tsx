@@ -4,10 +4,13 @@ import Menu, {IMenuProps} from "./index";
 import MenuItem from "./MenuItem";
 import SubMenu1 from "./SubMenu1";
 //  引入图标文件
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-library.add(fas) // 一次性导入所有的图标，接下来就可以使用字符串了
-
+// 模拟Icon组件为一个span标签
+jest.mock('../Icon/index', () => {
+  // @ts-ignore
+  return ({icon, onClick}) => {
+    return <span onClick={onClick}>{icon}</span>
+  }
+})
 const activeProps: IMenuProps = {
   defaultIndex: '2',
   onSelect: jest.fn()
@@ -64,7 +67,7 @@ const MenuWrapper = (props: IMenuProps) => (
   </Menu>
 )
 let wrapper: RenderResult, menuEle: HTMLElement, activeEle: HTMLElement, disableEle: HTMLElement
-describe('测试Menu 和 MenuItem 组件 ', () => {
+describe('测试Menu 和 MenuItem 组件', () => {
   beforeEach(() => {
     // console.log('每个case执行前调用的钩子')
   })
@@ -115,8 +118,8 @@ describe('测试Menu 和 MenuItem 组件 ', () => {
     // 添加css
     document.head.appendChild(createSubMenuStyle())
     // 默认情况下不显示
-    const subMenuItemEle = wrapper.getByText('4-0')
-    expect(subMenuItemEle).not.toBeVisible()
+    const subMenuItemEle = wrapper.queryByText('4-0')
+    expect(subMenuItemEle).not.toBeInTheDocument()
 
     // hover 进来，显示
     const subMenuTitleEle = wrapper.getByText('子菜单')
@@ -124,37 +127,39 @@ describe('测试Menu 和 MenuItem 组件 ', () => {
     fireEvent.mouseEnter(subMenuTitleEle)
     // 因为在mouseEnter方法中我们使用了异步，所以testLibrary 提供了waitFor方法在这段异步时间内重复调用断言
     await waitFor(() => {
-      expect(subMenuItemEle).toBeVisible()
+      expect(wrapper.queryByText('4-0')).toBeInTheDocument()
     })
 
     // 移出 隐藏
     fireEvent.mouseLeave(subMenuTitleEle)
-    await waitFor(() => {
-      expect(subMenuItemEle).not.toBeVisible()
-    })
+    setTimeout(()=>{
+      expect(wrapper.queryByText('4-0')).not.toBeInTheDocument()
+    },200)
   });
   it('渲染垂直模式的子菜单', async function () {
     wrapper = render(MenuWrapper(verticalProps))
     // 添加css
     document.head.appendChild(createSubMenuStyle())
     // 默认情况下不显示
-    const subMenuItemEle = wrapper.getByText('4-0')
-    expect(subMenuItemEle).not.toBeVisible()
+    const subMenuItemEle = wrapper.queryByText('4-0')
+    expect(subMenuItemEle).not.toBeInTheDocument()
 
     // 点击 显示
     const subMenuTitleEle = wrapper.getByText('子菜单')
     expect(subMenuTitleEle.parentNode).toHaveClass('whmk-submenu whmk-submenu-vertical')
     fireEvent.click(subMenuTitleEle)
-    expect(subMenuItemEle).toBeVisible()
+    await waitFor(() => {
+      expect(wrapper.queryByText('4-0')).toBeInTheDocument()
+    })
     // 点击子menuItem, 会添加选中类
-    fireEvent.click(subMenuItemEle)
-    expect(subMenuItemEle).toHaveClass('is-active')
+    fireEvent.click(wrapper.getByText('4-0'))
+    expect(wrapper.getByText('4-0')).toHaveClass('is-active')
     expect(subMenuTitleEle.parentNode).toHaveClass('is-active')
 
 
     // 再次点击 隐藏
-    fireEvent.click(subMenuTitleEle)
-    expect(subMenuItemEle).not.toBeVisible()
+    subMenuTitleEle && fireEvent.click(subMenuTitleEle)
+    expect(subMenuItemEle).not.toBeInTheDocument()
   });
   it('渲染垂直模式默认展开子菜单', async function () {
     wrapper = render(MenuWrapper(defaultOpenSubMenuProps))

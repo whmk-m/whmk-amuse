@@ -1,7 +1,6 @@
 import React, {useState} from "react";
-import {Story, Meta} from '@storybook/react/types-6-0';
-import AutoComplete, {IAutoCompleteProps, IOption} from "./index";
-import Input from "../Input";
+import {Meta} from '@storybook/react/types-6-0';
+import AutoComplete, {IOption} from "./index";
 
 export default {
   title: "whmk-amuse/AutoComplete",
@@ -14,26 +13,24 @@ const mockOption = (str: string, repeat: number = 1) => ({
   label: str.repeat(repeat)
 });
 
-const Template: Story<IAutoCompleteProps> = (props, Input) => <AutoComplete {...props}/>
-
 export const DefaultAutoComplete = () => {
   const [value, setValue] = useState('')
   const [options, setOptions] = useState<Array<IOption>>([])
 
   const handleChange = (searchText: string) => {
-    console.log('onChange', searchText)
+    // console.log('onChange', searchText)
     setValue(searchText)
   }
 
   const handleSearch = (searchText: string) => {
-    console.log('onSearch', searchText)
+    // console.log('onSearch', searchText)
     setOptions(
       !searchText ? [] : [mockOption(searchText), mockOption(searchText, 2), mockOption(searchText, 3)],
     );
   }
 
   const handleSelect = (searchText: string, option: IOption) => {
-    console.log('onSelect', searchText, option)
+    // console.log('onSelect', searchText, option)
   }
 
   return (
@@ -60,19 +57,19 @@ export const FilterOptionAutoComplete = () => {
   ])
 
   const handleChange = (searchText: string) => {
-    console.log('onChange', searchText)
+    // console.log('onChange', searchText)
     setValue(searchText)
   }
 
   const handleSearch = (searchText: string) => {
-    console.log('onSearch', searchText)
+    // console.log('onSearch', searchText)
     setOptions(
       !searchText ? [] : [mockOption(searchText), mockOption(searchText, 2), mockOption(searchText, 3)],
     );
   }
 
   const handleSelect = (searchText: string, option: IOption) => {
-    console.log('onSelect', searchText, option)
+    // console.log('onSelect', searchText, option)
   }
 
   const filterOption = function (value: string, option: IOption): boolean {
@@ -104,19 +101,19 @@ export const RenderOptionAutoComplete = () => {
   ])
 
   const handleChange = (searchText: string) => {
-    console.log('onChange', searchText)
+    // console.log('onChange', searchText)
     setValue(searchText)
   }
 
   const handleSearch = (searchText: string) => {
-    console.log('onSearch', searchText)
+    // console.log('onSearch', searchText)
     setOptions(
       !searchText ? [] : [mockOption(searchText), mockOption(searchText, 2), mockOption(searchText, 3)],
     );
   }
 
   const handleSelect = (searchText: string, option: IOption) => {
-    console.log('onSelect', searchText, option)
+    // console.log('onSelect', searchText, option)
     setValue(searchText)
   }
 
@@ -150,12 +147,12 @@ export const DebounceAutoComplete = () => {
   const [options, setOptions] = useState<Array<IOption>>([])
 
   const handleChange = (searchText: string) => {
-    console.log('onChange', searchText)
+    // console.log('onChange', searchText)
     setValue(searchText)
   }
 
   const handleSearch = (searchText: string) => {
-    console.log('onSearch', searchText)
+    // console.log('onSearch', searchText)
     setOptions(
       !searchText ? [] : [mockOption(searchText), mockOption(searchText, 2), mockOption(searchText, 3)],
     );
@@ -185,12 +182,12 @@ export const DefaultValueAutoComplete = () => {
   ])
 
   const handleChange = (searchText: string) => {
-    console.log('onChange', searchText)
+    // console.log('onChange', searchText)
     setValue(searchText)
   }
 
   const handleSearch = (searchText: string) => {
-    console.log('onSearch', searchText)
+    // console.log('onSearch', searchText)
     setOptions(
       !searchText ? [] : [mockOption(searchText), mockOption(searchText, 2), mockOption(searchText, 3)],
     );
