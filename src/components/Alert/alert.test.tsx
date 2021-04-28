@@ -23,6 +23,11 @@ const descProps:IBaseAlertProps = {
   description:'这是描述'
 }
 
+const differentProps:IBaseAlertProps = {
+  title:'标题',
+  type:'danger',
+}
+
 describe('Test Button Component',()=>{
   it('测试默认Alert属性', function () {
     const wrapper = render(<Alert {...defaultProps}/>)
@@ -32,6 +37,7 @@ describe('Test Button Component',()=>{
     expect(alertElement).toHaveClass('whmk-alert-info')
   });
   it('测试Alert不同的type类型', function () {
+    render(<Alert {...differentProps}/>)
     const alertElement = document.querySelector('.whmk-alert')
     expect(alertElement).toHaveClass('whmk-alert-danger')
   });
