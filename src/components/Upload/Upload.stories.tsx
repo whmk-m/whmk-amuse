@@ -37,7 +37,7 @@ DefaultUpload2.storyName = '最基础的上传组件2 不能配置基础属性'
 export const BeforeDealUpload = () => {
 
   const handleBeforeUpload = (files: FileList<IFileItemProps>) => {
-    console.log('beforeUpload:', files)
+    // console.log('beforeUpload:', files)
     // 大于 5M 的 不能上传
     if (files[0].size && files[0].size / 1024 / 1024 > 5) {
       alert('beforeUpload: 大于5M的不能上传')
@@ -73,11 +73,11 @@ export const LoadingUpload = () => {
     if (files.length === 0) return
     const file = files[0]
     if (file.status === 'uploading') {
-      console.log('开始 loading....')
+      // console.log('开始 loading....')
       return
     }
     if (file.status === 'error' || file.status === 'success') {
-      console.log('结束 loading....')
+      // console.log('结束 loading....')
       return
     }
   }
@@ -103,9 +103,9 @@ export const ControlFileList = () => {
   }])
 
   const handleChange = (files: FileList<IFileItemProps>) => {
-    console.log('ControlFileList  log开始============================================')
-    console.log(files)
-    console.log('ControlFileList  log结束============================================')
+    // console.log('ControlFileList  log开始============================================')
+    // console.log(files)
+    // console.log('ControlFileList  log结束============================================')
     setFileList(files.slice(0, 2))
   }
 
@@ -136,7 +136,7 @@ export const ManualUpload = () => {
     xhr.setRequestHeader('Content-Type', 'multipart/form-data')
     xhr.responseType = 'json'
     xhr.onload = () => {
-      console.log('上传成功')
+      // console.log('上传成功')
       const files:IFileItemProps[] = fileList.map(item=>({
         ...item,
         status:'success',
@@ -144,7 +144,7 @@ export const ManualUpload = () => {
       setFileList(files)
     }
     xhr.onerror = () => {
-      console.log('上传失败')
+      // console.log('上传失败')
       const files:IFileItemProps[] = fileList.map(item=>({
         ...item,
         status:'error',
@@ -152,7 +152,7 @@ export const ManualUpload = () => {
       setFileList(files)
     }
     xhr.upload.onprogress = (event) => {
-      console.log('上传中')
+      // console.log('上传中')
       const files:IFileItemProps[] = fileList.map(item=>({
         ...item,
         status:'uploading',

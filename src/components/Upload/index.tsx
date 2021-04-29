@@ -297,7 +297,7 @@ const Upload: React.FC<IUploadProps> = React.forwardRef((props, ref) => {
   // 删除上传的文件
   const handleRemove = async (event: React.MouseEvent, file: IFileItemProps) => {
     event.stopPropagation()
-    console.log('handleRemove:',file)
+    // console.log('handleRemove:',file)
     if (!beforeRemove || await beforeRemove(file)) {
       const _files = fileList.filter(item => item.uid !== file.uid);
       updateFileList(_files)

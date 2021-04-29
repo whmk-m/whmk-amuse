@@ -22,7 +22,7 @@ const defaultProps: IUploadProps = {
 const beforeDealProps:IUploadProps = {
   beforeRemove:jest.fn().mockImplementationOnce(() => false),
   beforeUpload:jest.fn((files)=> {
-    console.log('files:',files)
+    // console.log('files:',files)
     return true
   })
 }
