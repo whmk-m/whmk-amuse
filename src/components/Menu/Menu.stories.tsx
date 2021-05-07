@@ -117,7 +117,7 @@ export const DefaultOpenSubMenus = () => {
       <Menu.Item>
         4
       </Menu.Item>
-      <Menu.SubMenu title={'子菜单'}>
+      <Menu.SubMenu title={'子菜单12'}>
         <Menu.Item>
           5-1
         </Menu.Item>
