@@ -4,7 +4,7 @@ import Button, {ButtonProps} from "./index";
 
 
 export default {
-  title: "whmk-amuse/按钮",
+  title: "whmk-amuse/Button",
   component: Button,
   argTypes: {
     size: {

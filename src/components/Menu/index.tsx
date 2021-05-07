@@ -5,18 +5,50 @@ import MenuItem, { IMenuItemProps } from "./MenuItem";
 export type MenuMode = 'vertical' | 'horizontal'
 
 export interface IMenuProps {
+  /**
+   * 默认选中的菜单项的索引
+   */
   defaultIndex?: string,
+  /**
+   * 自定义类名
+   */
   className?: string,
+  /**
+   * 自定义CSS样式
+   */
   style?: React.CSSProperties,
+  /**
+   * 点击当前菜单项的回调
+   * @param selectedIndex 当前菜单项的索引
+   */
   onSelect?: (selectedIndex: string) => void,
+  /**
+   * 菜单渲染模式，水平或者垂直
+   */
   mode?: MenuMode
+  /**
+   * 默认展开的子菜单项，是一个包含子菜单项索引的数组
+   */
   defaultOpenSubMenus?:Array<string>
 }
 
 interface IMenuContext {
+  /**
+   * 选中的菜单项索引
+   */
   activeIndex: string
+  /**
+   * 选中菜单项的回调
+   * @param selectedIndex 选中菜单项的索引
+   */
   onSelect?: (selectedIndex: string) => void,
+  /**
+   * 菜单渲染模式
+   */
   mode?:MenuMode
+  /**
+   * 默认展开的子菜单项
+   */
   defaultOpenSubMenus?:Array<string>
 }
 // 创建context上下文，与子组件之间可以共享属性
@@ -58,7 +90,7 @@ const Menu: React.FC<IMenuProps> = (props) => {
     return React.Children.map(children,(child,index)=>{
       const childElement = child as React.FunctionComponentElement<IMenuItemProps>
       const { displayName  } = childElement.type
-      if (displayName !== 'MenuItem' && displayName !=='SubMenu') {
+      if (displayName !== 'MenuItem' && displayName !=='SubMenu' && displayName !=='SubMenu1') {
         console.error('Warning: Menu has a child which is not a MenuItem or SubMenu component')
         return null
       }
@@ -83,10 +115,7 @@ export type IMenuComponent =  FC<IMenuProps> & {
   Item:FC<IMenuItemProps>,
   SubMenu:FC<ISubMenuProps>
 }
-
 const TransMenu = Menu as IMenuComponent
-
 TransMenu.Item = MenuItem
 TransMenu.SubMenu = SubMenu
-
 export default TransMenu
